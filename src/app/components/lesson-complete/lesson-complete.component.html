@@ -1,0 +1,67 @@
+<div class="lc-backdrop" role="dialog" aria-labelledby="lc-title">
+  <div class="lc-card">
+    <div class="lc-celebrate" aria-hidden="true">🎉</div>
+    <h1 id="lc-title" class="lc-title">¡Unidad completada!</h1>
+    @if (unitTitle()) {
+      <p class="lc-subtitle">{{ unitTitle() }}</p>
+    }
+
+    <div class="lc-stats">
+      <div class="lc-stat lc-stat--xp">
+        <span class="lc-stat-icon">⚡</span>
+        <span class="lc-stat-value">+{{ xpEarned() }}</span>
+        <span class="lc-stat-label">XP ganada</span>
+      </div>
+      <div class="lc-stat lc-stat--streak">
+        <span class="lc-stat-icon">🔥</span>
+        <span class="lc-stat-value">{{ streakDisplay() }}</span>
+        <span class="lc-stat-label">Racha (días)</span>
+      </div>
+      <div class="lc-stat lc-stat--done">
+        <span class="lc-stat-icon">✓</span>
+        <span class="lc-stat-value"
+          >{{ correctAnswers() }} / {{ totalExercises() }}</span
+        >
+        <span class="lc-stat-label">Ejercicios bien</span>
+      </div>
+    </div>
+
+    @if (nextUnitUnlocked()) {
+      <div class="lc-next-unit">
+        <span class="lc-next-icon">🔓</span>
+        <div class="lc-next-text">
+          <strong>Nueva unidad desbloqueada</strong>
+          @if (nextUnitTitle()) {
+            <span class="lc-next-title">{{ nextUnitTitle() }}</span>
+          } @else {
+            <span class="lc-next-title">Siguiente nivel</span>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="lc-actions">
+      <button
+        type="button"
+        class="lc-btn lc-btn--primary"
+        (click)="continueToMap.emit()"
+      >
+        Continuar al mapa
+      </button>
+      <button
+        type="button"
+        class="lc-btn lc-btn--secondary"
+        (click)="repeatLesson.emit()"
+      >
+        Repetir lección
+      </button>
+      <button
+        type="button"
+        class="lc-btn lc-btn--ghost"
+        (click)="goToDashboard.emit()"
+      >
+        Ir al dashboard
+      </button>
+    </div>
+  </div>
+</div>

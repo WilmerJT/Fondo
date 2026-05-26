@@ -1,0 +1,27 @@
+<!-- Usamos 'as stats' para crear un objeto único, NO una lista -->
+<div class="dashboard" *ngIf="stats$ | async as stats; else loading">
+  <header class="header">
+  <div class="user-info">
+    <h1>¡Hola, {{ stats.username }}! 👋</h1>
+    <!-- Añadimos una clase dinámica según el nivel -->
+    <p class="level-badge" [ngClass]="stats.level.split(' ')[0].toLowerCase()">
+      {{ stats.level }}
+    </p>
+  </div>
+  <div class="streak-badge" title="Días seguidos completando al menos una lección">
+    🔥 {{ stats.streak ?? 0 }} día{{ (stats.streak ?? 0) === 1 ? '' : 's' }}
+  </div>
+  </header>
+  <div class="progress-card">
+    <h3>Nivel: {{ stats.level }}</h3>
+    <p>XP Acumulada: {{ stats.xp }}</p>
+    <p class="streak-line">Racha diaria: {{ stats.streak ?? 0 }} 🔥</p>
+    <button class="btn-primary" routerLink="/learning-path">Ir al Mapa</button>
+  </div>
+</div>
+<ng-template #loading>
+  <div class="loading-state">
+    <p>Conectando con la base de datos de Firebase...</p>
+  </div>
+</ng-template>
+

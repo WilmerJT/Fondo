@@ -1,0 +1,54 @@
+@if (vm$ | async; as vm) {
+  @if (vm.loading) {
+    <div class="profile-container profile-loading">
+      <p>Cargando perfil...</p>
+    </div>
+  } @else if (!vm.user) {
+    <div class="profile-container profile-loading">
+      <p>No hay datos de usuario en Firebase (documento <code>users/usuario_prueba</code>).</p>
+    </div>
+  } @else {
+    <div class="profile-container">
+      <section class="profile-header">
+        <div class="avatar-circle">{{ vm.user.username.charAt(0) }}</div>
+        <h2>{{ vm.user.username }}</h2>
+        <p class="user-level">{{ vm.user.level }}</p>
+      </section>
+      <section class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-icon">⚡</span>
+          <div class="stat-info">
+            <h3>{{ vm.user.xp }}</h3>
+            <p>Experiencia Total</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🔥</span>
+          <div class="stat-info">
+            <h3>{{ vm.user.streak ?? 0 }}</h3>
+            <p>Racha diaria</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">📚</span>
+          <div class="stat-info">
+            <h3>124</h3>
+            <p>Palabras nuevas</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="stat-icon">🏆</span>
+          <div class="stat-info">
+            <h3>Liga Oro</h3>
+            <p>Ranking actual</p>
+          </div>
+        </div>
+      </section>
+      <footer class="profile-footer">
+        <button routerLink="/dashboard" class="btn-outline">
+          Volver al Dashboard
+        </button>
+      </footer>
+    </div>
+  }
+}

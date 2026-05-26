@@ -1,0 +1,33 @@
+<div class="path-container">
+  <header class="path-header">
+    <button routerLink="/dashboard" class="btn-back">←</button>
+    <h1>Mi Camino</h1>
+  </header>
+  <div class="units-list" *ngIf="units$ | async as units; else loading">
+    <div
+      *ngFor="let unit of units; let last = last"
+      class="unit-node"
+      [ngClass]="unit.status"
+    >
+      <div class="circle-container">
+        <div class="circle">
+          <span class="icon">{{ unit.icon }}</span>
+        </div>
+        <!-- El conector no se muestra en el último elemento -->
+        <div class="connector" *ngIf="!last"></div>
+      </div>
+      <div class="unit-info">
+        <h3>{{ unit.title }}</h3>
+        <span class="status-text">{{ unit.status }}</span>
+      </div>
+      <button
+        *ngIf="unit.status !== 'locked'"
+        class="start-btn"
+        [routerLink]="['/lesson', unit.id]"
+      >
+        Empezar
+      </button>
+    </div>
+  </div>
+</div>
+<ng-template #loading> <p>Cargando mapa de lecciones...</p> </ng-template>

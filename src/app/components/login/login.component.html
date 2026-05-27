@@ -1,0 +1,91 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-brand">
+      <span class="login-logo" aria-hidden="true">🌍</span>
+      <h1>App Idiomas</h1>
+      <p class="login-tagline">
+        @if (mode === 'login') {
+          Inicia sesión para continuar aprendiendo
+        } @else {
+          Crea tu cuenta y empieza tu camino
+        }
+      </p>
+    </div>
+
+    <div class="login-tabs" role="tablist">
+      <button
+        type="button"
+        class="login-tab"
+        [class.login-tab--active]="mode === 'login'"
+        (click)="setMode('login')"
+      >
+        Entrar
+      </button>
+      <button
+        type="button"
+        class="login-tab"
+        [class.login-tab--active]="mode === 'register'"
+        (click)="setMode('register')"
+      >
+        Registrarse
+      </button>
+    </div>
+
+    <form class="login-form" (ngSubmit)="submit()">
+      @if (mode === 'register') {
+        <label class="login-field">
+          <span>Nombre de usuario</span>
+          <input
+            type="text"
+            name="username"
+            [(ngModel)]="username"
+            autocomplete="username"
+            placeholder="Tu nombre"
+          />
+        </label>
+      }
+
+      <label class="login-field">
+        <span>Correo electrónico</span>
+        <input
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          autocomplete="email"
+          placeholder="tu@correo.com"
+          required
+        />
+      </label>
+
+      <label class="login-field">
+        <span>Contraseña</span>
+        <input
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          [attr.autocomplete]="mode === 'login' ? 'current-password' : 'new-password'"
+          placeholder="Mínimo 6 caracteres"
+          required
+        />
+      </label>
+
+      @if (errorMessage) {
+        <p class="login-error" role="alert">{{ errorMessage }}</p>
+      }
+
+      <button type="submit" class="login-submit" [disabled]="loading">
+        @if (loading) {
+          Espera...
+        } @else if (mode === 'login') {
+          Iniciar sesión
+        } @else {
+          Crear cuenta
+        }
+      </button>
+    </form>
+
+    <p class="login-footer">
+      <a routerLink="/welcome">Volver al inicio</a>
+    </p>
+  </div>
+</div>

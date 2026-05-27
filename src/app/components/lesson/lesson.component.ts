@@ -281,7 +281,7 @@ export class LessonComponent implements OnInit, OnDestroy {
         error instanceof Error &&
         error.message === 'USER_DOC_MISSING'
       ) {
-        alert('No existe el usuario en Firebase (users/usuario_prueba).');
+        alert('No hay perfil en Firestore para tu cuenta. Vuelve a iniciar sesión.');
       } else {
         alert('Error al guardar progreso.');
       }

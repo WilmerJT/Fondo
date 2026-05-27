@@ -20,13 +20,24 @@
         <h3>{{ unit.title }}</h3>
         <span class="status-text">{{ unit.status }}</span>
       </div>
-      <button
-        *ngIf="unit.status !== 'locked'"
-        class="start-btn"
-        [routerLink]="['/lesson', unit.id]"
-      >
-        Empezar
-      </button>
+      @if (unit.status === 'available') {
+        <button
+          type="button"
+          class="action-btn action-btn--start"
+          [routerLink]="['/lesson', unit.id]"
+        >
+          Empezar
+        </button>
+      }
+      @if (unit.status === 'completed') {
+        <button
+          type="button"
+          class="action-btn action-btn--repeat"
+          [routerLink]="['/lesson', unit.id]"
+        >
+          Repetir
+        </button>
+      }
     </div>
   </div>
 </div>

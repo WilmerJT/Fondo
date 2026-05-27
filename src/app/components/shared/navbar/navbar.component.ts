@@ -17,8 +17,11 @@ export class NavbarComponent {
     this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
-        // Si la URL contiene 'lesson', ocultamos la barra
-        this.showNavbar = !event.url.includes('lesson');
+        const url = event.urlAfterRedirects || event.url;
+        this.showNavbar =
+          !url.includes('lesson') &&
+          !url.includes('login') &&
+          !url.includes('welcome');
       });
   }
 }

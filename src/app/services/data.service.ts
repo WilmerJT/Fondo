@@ -3,42 +3,67 @@ import {
   Firestore,
   doc,
   onSnapshot,
-  updateDoc,
   collection,
   query,
   orderBy,
   getDocs,
   getDoc,
   runTransaction,
+  setDoc,
+  writeBatch,
 } from '@angular/fire/firestore';
 
-import { Observable, shareReplay } from 'rxjs';
+import {
+  Observable,
+  combineLatest,
+  from,
+  of,
+  shareReplay,
+  switchMap,
+} from 'rxjs';
 import type { ExerciseDoc } from '../models/exercise.types';
+import type { UnitProgressStatus } from '../models/unit-progress.types';
 import { normalizeExerciseFromFirestore } from '../models/exercise-from-firestore';
+import { AuthService } from './auth.service';
+
+export interface UnitWithProgress {
+  id: string;
+  title: string;
+  icon?: string;
+  description?: string;
+  order: number;
+  status: UnitProgressStatus;
+}
 
 @Injectable({ providedIn: 'root' })
 export class DataService {
   private firestore = inject(Firestore);
+  private auth = inject(AuthService);
   private userStats$: Observable<any>;
+
   constructor() {
-    const userDocRef = doc(this.firestore, 'users', 'usuario_prueba');
-    this.userStats$ = new Observable((observer) => {
-      // El onSnapshot se queda aquí, dentro del constructor (contexto seguro)
-      const unsubscribe = onSnapshot(
-        userDocRef,
-        (docSnap) => {
-          if (docSnap.exists()) {
-            observer.next({ id: docSnap.id, ...docSnap.data() });
-          } else {
-            observer.next(null);
-          }
-        },
-        (error) => observer.error(error),
-      );
-      return { unsubscribe };
-    }).pipe(
+    this.userStats$ = this.auth.user$.pipe(
+      switchMap((user) => {
+        if (!user) {
+          return of(null);
+        }
+        const userDocRef = doc(this.firestore, 'users', user.uid);
+        return new Observable<any>((observer) => {
+          const unsubscribe = onSnapshot(
+            userDocRef,
+            (docSnap) => {
+              if (docSnap.exists()) {
+                observer.next({ id: docSnap.id, ...docSnap.data() });
+              } else {
+                observer.next(null);
+              }
+            },
+            (error) => observer.error(error),
+          );
+          return { unsubscribe };
+        });
+      }),
       shareReplay(1),
-      // Esto hace que múltiples componentes puedan escuchar sin crear más conexiones
     );
   }
 
@@ -46,13 +71,22 @@ export class DataService {
     return this.userStats$;
   }
 
-  /**
-   * Suma XP y nivel en Firestore leyendo siempre el documento actual dentro de una
-   * transacción (evita perder XP entre ejercicios cuando el snapshot en caché va retrasado).
-   *
-   * @param opts.applyStreak Por defecto `true`. En ejercicios intermedios usar `false`;
-   * la racha solo debe aplicarse al cerrar la unidad.
-   */
+  private requireUid(): string {
+    const uid = this.auth.getCurrentUid();
+    if (!uid) {
+      throw new Error('NOT_AUTHENTICATED');
+    }
+    return uid;
+  }
+
+  private userDocRef() {
+    return doc(this.firestore, 'users', this.requireUid());
+  }
+
+  private progressDocRef(uid: string, unitId: string) {
+    return doc(this.firestore, 'users', uid, 'progress', unitId);
+  }
+
   async addXP(
     points: number,
     opts?: { applyStreak?: boolean },
@@ -63,7 +97,7 @@ export class DataService {
     newXP: number;
   }> {
     const applyStreak = opts?.applyStreak ?? true;
-    const userDocRef = doc(this.firestore, 'users', 'usuario_prueba');
+    const userDocRef = this.userDocRef();
 
     return runTransaction(this.firestore, async (transaction) => {
       const snap = await transaction.get(userDocRef);
@@ -151,62 +185,14 @@ export class DataService {
     return 'Principiante A1';
   }
 
-  getUnitsFromFirebase(): Observable<any[]> {
-    return new Observable((observer) => {
-      try {
-        const unitsCol = collection(this.firestore, 'units');
-        const q = query(unitsCol, orderBy('order', 'asc'));
-        // Usamos onSnapshot directamente sobre la query
-        const unsubscribe = onSnapshot(
-          q,
-          (querySnapshot) => {
-            const units: any[] = [];
-            querySnapshot.forEach((docSnap) => {
-              const data = docSnap.data() as Record<string, unknown>;
-              const orderVal = data['order'];
-              const order =
-                typeof orderVal === 'number'
-                  ? orderVal
-                  : Number(orderVal) || 0;
-              units.push({ id: docSnap.id, ...data, order });
-            });
-            units.sort((a, b) => a.order - b.order);
-            observer.next(units);
-          },
-          (error) => {
-            observer.error(error);
-          },
-        );
-        return { unsubscribe };
-      } catch (err) {
-        observer.error(err);
-        return;
-      }
-    });
-  }
-
-  /**
-   * Marca la unidad como completada y desbloquea la siguiente por `order` si estaba `locked`.
-   * Devuelve si se desbloqueó una nueva unidad y el título de esa unidad (para UI).
-   */
-  async completeUnit(unitId: string): Promise<{
-    nextUnitUnlocked: boolean;
-    nextUnitTitle: string | null;
-  }> {
-    const unitDocRef = doc(this.firestore, 'units', unitId);
-    await updateDoc(unitDocRef, {
-      status: 'completed',
-    });
-
+  /** Lista de unidades globales (solo contenido, sin `status` de progreso). */
+  private async fetchGlobalUnitsList(): Promise<
+    Omit<UnitWithProgress, 'status'>[]
+  > {
     const unitsCol = collection(this.firestore, 'units');
     const q = query(unitsCol, orderBy('order', 'asc'));
     const snap = await getDocs(q);
-    const units: {
-      id: string;
-      order: number;
-      status: string;
-      title: string;
-    }[] = [];
+    const units: Omit<UnitWithProgress, 'status'>[] = [];
     snap.forEach((d) => {
       const data = d.data() as Record<string, unknown>;
       const orderVal = data['order'];
@@ -214,13 +200,184 @@ export class DataService {
         typeof orderVal === 'number' ? orderVal : Number(orderVal) || 0;
       units.push({
         id: d.id,
-        order,
-        status: typeof data['status'] === 'string' ? data['status'] : 'locked',
         title: typeof data['title'] === 'string' ? data['title'] : '',
+        icon: typeof data['icon'] === 'string' ? data['icon'] : undefined,
+        description:
+          typeof data['description'] === 'string'
+            ? data['description']
+            : undefined,
+        order,
       });
     });
     units.sort((a, b) => a.order - b.order);
+    return units;
+  }
 
+  /**
+   * Crea `users/{uid}/progress/{unitId}` para cada unidad global.
+   * Primera por `order` → `available`, resto → `locked`.
+   */
+  async initializeUserProgress(uid: string): Promise<void> {
+    const progressCol = collection(this.firestore, 'users', uid, 'progress');
+    const existing = await getDocs(progressCol);
+    if (!existing.empty) {
+      return;
+    }
+
+    const units = await this.fetchGlobalUnitsList();
+    if (units.length === 0) {
+      return;
+    }
+
+    const batch = writeBatch(this.firestore);
+    const now = new Date().toISOString();
+
+    units.forEach((unit, index) => {
+      const status: UnitProgressStatus =
+        index === 0 ? 'available' : 'locked';
+      batch.set(doc(progressCol, unit.id), {
+        status,
+        updatedAt: now,
+      });
+    });
+
+    await batch.commit();
+  }
+
+  private watchGlobalUnits(): Observable<Omit<UnitWithProgress, 'status'>[]> {
+    return new Observable((observer) => {
+      const unitsCol = collection(this.firestore, 'units');
+      const q = query(unitsCol, orderBy('order', 'asc'));
+      const unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          const units: Omit<UnitWithProgress, 'status'>[] = [];
+          querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data() as Record<string, unknown>;
+            const orderVal = data['order'];
+            const order =
+              typeof orderVal === 'number'
+                ? orderVal
+                : Number(orderVal) || 0;
+            units.push({
+              id: docSnap.id,
+              title: typeof data['title'] === 'string' ? data['title'] : '',
+              icon: typeof data['icon'] === 'string' ? data['icon'] : undefined,
+              description:
+                typeof data['description'] === 'string'
+                  ? data['description']
+                  : undefined,
+              order,
+            });
+          });
+          units.sort((a, b) => a.order - b.order);
+          observer.next(units);
+        },
+        (error) => observer.error(error),
+      );
+      return { unsubscribe };
+    });
+  }
+
+  private watchUserProgress(
+    uid: string,
+  ): Observable<Map<string, UnitProgressStatus>> {
+    return new Observable((observer) => {
+      const progressCol = collection(
+        this.firestore,
+        'users',
+        uid,
+        'progress',
+      );
+      const unsubscribe = onSnapshot(
+        progressCol,
+        (snap) => {
+          const map = new Map<string, UnitProgressStatus>();
+          snap.forEach((d) => {
+            const data = d.data() as Record<string, unknown>;
+            const s = data['status'];
+            if (
+              s === 'locked' ||
+              s === 'available' ||
+              s === 'completed'
+            ) {
+              map.set(d.id, s);
+            }
+          });
+          observer.next(map);
+        },
+        (error) => observer.error(error),
+      );
+      return { unsubscribe };
+    });
+  }
+
+  private mergeUnitsWithProgress(
+    units: Omit<UnitWithProgress, 'status'>[],
+    progress: Map<string, UnitProgressStatus>,
+  ): UnitWithProgress[] {
+    return units.map((unit) => ({
+      ...unit,
+      status: progress.get(unit.id) ?? 'locked',
+    }));
+  }
+
+  /**
+   * Unidades globales + estado por usuario en `users/{uid}/progress`.
+   */
+  getUnitsFromFirebase(): Observable<UnitWithProgress[]> {
+    return this.auth.user$.pipe(
+      switchMap((user) => {
+        if (!user) {
+          return of([]);
+        }
+        const uid = user.uid;
+        return combineLatest([
+          this.watchGlobalUnits(),
+          this.watchUserProgress(uid),
+        ]).pipe(
+          switchMap(([units, progressMap]) => {
+            if (units.length === 0) {
+              return of([]);
+            }
+            if (progressMap.size === 0) {
+              return from(this.initializeUserProgress(uid)).pipe(
+                switchMap(() =>
+                  of(
+                    this.mergeUnitsWithProgress(
+                      units,
+                      new Map(
+                        units.map((u, i) => [
+                          u.id,
+                          (i === 0 ? 'available' : 'locked') as UnitProgressStatus,
+                        ]),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }
+            return of(this.mergeUnitsWithProgress(units, progressMap));
+          }),
+        );
+      }),
+    );
+  }
+
+  async completeUnit(unitId: string): Promise<{
+    nextUnitUnlocked: boolean;
+    nextUnitTitle: string | null;
+  }> {
+    const uid = this.requireUid();
+    const now = new Date().toISOString();
+
+    await setDoc(
+      this.progressDocRef(uid, unitId),
+      { status: 'completed', updatedAt: now },
+      { merge: true },
+    );
+
+    const units = await this.fetchGlobalUnitsList();
     const current = units.find((u) => u.id === unitId);
     if (!current) {
       return { nextUnitUnlocked: false, nextUnitTitle: null };
@@ -230,10 +387,22 @@ export class DataService {
       .filter((u) => u.order > current.order)
       .sort((a, b) => a.order - b.order)[0];
 
-    if (next && next.status === 'locked') {
-      await updateDoc(doc(this.firestore, 'units', next.id), {
-        status: 'available',
-      });
+    if (!next) {
+      return { nextUnitUnlocked: false, nextUnitTitle: null };
+    }
+
+    const nextProgressRef = this.progressDocRef(uid, next.id);
+    const nextSnap = await getDoc(nextProgressRef);
+    const nextStatus = nextSnap.exists()
+      ? (nextSnap.data() as { status?: string })?.status
+      : 'locked';
+
+    if (nextStatus === 'locked') {
+      await setDoc(
+        nextProgressRef,
+        { status: 'available', updatedAt: now },
+        { merge: true },
+      );
       return {
         nextUnitUnlocked: true,
         nextUnitTitle: next.title || null,
@@ -243,7 +412,6 @@ export class DataService {
     return { nextUnitUnlocked: false, nextUnitTitle: null };
   }
 
-  /** Título (y datos mínimos) de una unidad para cabeceras sin suscribirse a la lista completa. */
   async getUnitSummary(
     unitId: string,
   ): Promise<{ title: string } | null> {
@@ -254,7 +422,6 @@ export class DataService {
     return { title: typeof data['title'] === 'string' ? data['title'] : '' };
   }
 
-  /** Subcolección `units/{unitId}/exercises`, ordenada por `order`. */
   getExercisesForUnit(unitId: string): Observable<ExerciseDoc[]> {
     return new Observable((observer) => {
       try {

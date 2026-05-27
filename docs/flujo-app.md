@@ -1,22 +1,130 @@
 # Flujo actual de la app (app-idiomas)
 
-Angular con rutas planas, shell global (`router-outlet` + navbar inferior) y Firebase Firestore para usuario, unidades y ejercicios dinámicos.
+Angular con rutas planas, shell global (`router-outlet` + navbar inferior), **Firebase Authentication** (email/contraseña) y **Firestore** para perfil, unidades y ejercicios dinámicos.
 
 ## Rutas
 
-| Ruta | Componente | Rol |
-|------|------------|-----|
-| `/` | — | Redirección a `/welcome` |
-| `/welcome` | `WelcomeComponent` | Pantalla inicial (placeholder) |
-| `/dashboard` | `DashboardComponent` | Inicio: saludo, nivel, XP, racha, acceso al mapa |
-| `/learning-path` | `LearningPathComponent` | Lista de unidades desde Firestore |
-| `/lesson/:id` | `LessonComponent` | Lección dinámica (`:id` = ID del documento de unidad) |
-| `/profile` | `ProfileComponent` | Perfil y estadísticas |
+| Ruta | Componente | Protección | Rol |
+|------|------------|------------|-----|
+| `/` | — | — | Redirección a `/welcome` |
+| `/welcome` | `WelcomeComponent` | Pública | Pantalla de bienvenida → enlace a login |
+| `/login` | `LoginComponent` | `guestGuard` | Iniciar sesión / registrarse |
+| `/dashboard` | `DashboardComponent` | `authGuard` | Inicio: XP, nivel, racha |
+| `/learning-path` | `LearningPathComponent` | `authGuard` | Mapa de unidades |
+| `/lesson/:id` | `LessonComponent` | `authGuard` | Lección dinámica |
+| `/profile` | `ProfileComponent` | `authGuard` | Perfil y cerrar sesión |
+
+- **`authGuard`**: sin sesión → redirige a `/login`.
+- **`guestGuard`**: con sesión en `/login` → redirige a `/dashboard`.
+
+## Configuración en Firebase Console (pasos obligatorios)
+
+Proyecto actual: **`app-idioma-85f50`** (debe coincidir con `app.config.ts`).
+
+### 1. Activar Authentication
+
+1. Abre [Firebase Console](https://console.firebase.google.com/) → tu proyecto.
+2. Menú **Build** → **Authentication**.
+3. Pestaña **Sign-in method**.
+4. Habilita **Correo electrónico/Contraseña** (Email/Password).
+5. Guarda.
+
+Opcional: desactiva “Vincular cuentas con el mismo correo” si no lo necesitas.
+
+### 2. Dominios autorizados (desarrollo local)
+
+1. En **Authentication** → **Settings** → **Authorized domains**.
+2. Comprueba que estén:
+   - `localhost`
+   - `app-idioma-85f50.firebaseapp.com`
+3. Si pruebas desde otra URL (IP, dominio propio), añádela aquí.
+
+### 3. Firestore: documento de usuario por cuenta
+
+Cada usuario autenticado tiene su perfil en:
+
+`users/{uid}`
+
+donde **`uid`** es el ID que devuelve Firebase Auth (no un nombre fijo).
+
+**Al registrarse**, la app crea automáticamente el documento con:
+
+| Campo | Valor inicial |
+|-------|----------------|
+| `username` | Nombre elegido en el registro |
+| `email` | Correo de la cuenta |
+| `xp` | `0` |
+| `level` | `Principiante A1` |
+| `streak` | `0` |
+| `lastStreakDate` | `''` |
+
+**Al iniciar sesión**, si el documento no existe, `AuthService.ensureUserProfile()` lo crea con valores por defecto.
+
+Migración del usuario de prueba antiguo (`usuario_prueba`): puedes copiar sus datos a `users/{tu uid}` manualmente en la consola o empezar de cero con una cuenta nueva.
+
+### 4. Reglas de seguridad de Firestore (recomendado)
+
+En **Firestore** → **Rules**, usa algo como esto para desarrollo con auth (ajústalo en producción):
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /progress/{unitId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    match /units/{unitId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+
+      match /exercises/{exerciseId} {
+        allow read: if request.auth != null;
+        allow write: if false;
+      }
+    }
+  }
+}
+```
+
+- **Usuarios**: solo leen/escriben su propio `users/{uid}`.
+- **Unidades y ejercicios**: lectura para usuarios autenticados; escritura solo desde consola o Admin SDK (contenido del curso).
+
+Si las reglas exigen `request.auth` y Authentication no está activo, verás errores de permiso en la app.
+
+### 5. Publicar reglas
+
+Pulsa **Publish** en el editor de reglas después de editarlas.
+
+### 6. Probar el flujo
+
+1. `ng serve` → abre `http://localhost:4200`.
+2. **Welcome** → **Entrar o registrarse**.
+3. Pestaña **Registrarse**: correo, contraseña (mín. 6 caracteres), nombre de usuario.
+4. Tras el registro → **Dashboard**; en Firestore debe aparecer `users/{uid}`.
+5. Completa una lección y comprueba que `xp` sube en **ese** documento.
+6. En **Perfil** → **Cerrar sesión** → vuelve a `/login`.
+
+### 7. Errores frecuentes
+
+| Síntoma | Causa habitual | Qué hacer |
+|---------|----------------|-----------|
+| `auth/operation-not-allowed` | Email/Password no habilitado | Paso 1 |
+| `Missing or insufficient permissions` | Reglas Firestore sin `request.auth` | Pasos 4–5 |
+| Perfil vacío tras login | No existe `users/{uid}` | Registrarse de nuevo o crear doc manual |
+| Login no redirige | Dominio no autorizado | Paso 2 |
+
+---
 
 ## Shell y navegación
 
 - **`AppComponent`**: muestra `router-outlet` y `app-navbar`.
-- **Navbar inferior** (`Inicio` → `/dashboard`, `Mapa` → `/learning-path`, `Perfil` → `/profile`): visible en todas las rutas **excepto** cuando la URL contiene `lesson` (durante la lección la barra se oculta).
+- **Navbar inferior**: visible en rutas con sesión (`/dashboard`, `/learning-path`, `/profile`). **Oculta** en `/welcome`, `/login` y durante `/lesson/...`.
 
 ## Diagrama de flujo
 
@@ -48,7 +156,7 @@ flowchart TB
   ExDyn --> Check["COMPROBAR"]
   Check --> Wrong["Incorrecta → alert"]
   Check --> OK["Último ejercicio:\naddXP + racha\ncompleteUnit + desbloqueo"]
-  OK --> FirebaseWrite["users + units + siguiente unit available"]
+  OK --> FirebaseWrite["users + progress + desbloqueo siguiente unidad"]
 
   P --> UserData["getUserStats()"]
   P --> FooterDash["Volver al Dashboard → /dashboard"]
@@ -67,37 +175,39 @@ La app lee y escribe rutas fijas de **colección** y **subcolección**. Los **ID
 ```
 Firestore
 ├── users                                    ← colección raíz (nombre exacto: users)
-│   └── usuario_prueba                       ← documento (ID fijo en el código actual)
+│   └── {uid}                                ← perfil: xp, level, streak, username…
+│       └── progress                         ← subcolección: progreso del mapa POR USUARIO
+│           └── {unitId}                     ← mismo ID que units/{unitId}
+│               • status: locked | available | completed
+│               • updatedAt (opcional)
 │
-└── units                                    ← colección raíz (nombre exacto: units)
-    └── {unitId}                             ← documento por unidad (ej. unit_01)
-        │                                     • El campo order define el orden en el mapa
-        │                                     • El campo status: locked | available | completed
+└── units                                    ← contenido GLOBAL (igual para todos)
+    └── {unitId}                             ← title, icon, order, description…
+        │                                     • NO usar status aquí para progreso (la app lo ignora)
         │
-        └── exercises                        ← subcolección (nombre exacto: exercises)
-            └── {exerciseId}                 ← documento por ejercicio (ej. exercise_01)
-                                              • El campo order define el orden dentro de la lección
+        └── exercises                        ← ejercicios (globales)
+            └── {exerciseId}
 ```
 
 ### Rutas completas (path)
 
 | Qué es | Ruta en Firestore | Uso en la app |
 |--------|-------------------|---------------|
-| Usuario actual | `users/usuario_prueba` | Objetivo de `getUserStats()`, `addXP()`, racha. El ID **`usuario_prueba`** está hardcodeado en `DataService`; para otro usuario hay que cambiar el código o parametrizar. |
-| Lista de unidades | Colección **`units`** | `getUnitsFromFirebase()`: consulta con `orderBy('order', 'asc')`. |
-| Una unidad | **`units/{unitId}`** | `{unitId}` es el mismo valor que `:id` en `/lesson/:id`. Ejemplo: documento `units/unit_01`. |
-| Ejercicios de una unidad | **`units/{unitId}/exercises/{exerciseId}`** | `getExercisesForUnit(unitId)`: subcolección **`exercises`** bajo esa unidad, `orderBy('order', 'asc')`. |
+| Usuario actual | `users/{uid}` | `uid` = `Auth.currentUser.uid`. `getUserStats()`, `addXP()` y racha usan ese documento. |
+| Lista de unidades (contenido) | Colección **`units`** | Título, icono, orden — compartido. |
+| Progreso del mapa | **`users/{uid}/progress/{unitId}`** | `status` por usuario. `getUnitsFromFirebase()` combina `units` + `progress`. |
+| Una unidad (contenido) | **`units/{unitId}`** | Mismo ID que en `progress` y en `/lesson/:id`. |
+| Ejercicios | **`units/{unitId}/exercises/{exerciseId}`** | Globales; mismos para todos los usuarios. |
 
 ### Nombres que deben respetarse (literales)
 
 | Nombre | Tipo | Obligatorio |
 |--------|------|-------------|
 | `users` | Colección raíz | Sí |
+| `progress` | Subcolección bajo **`users/{uid}`** | Sí (progreso del mapa) |
 | `units` | Colección raíz | Sí |
 | `exercises` | Subcolección bajo cada `units/{unitId}` | Sí |
-| `usuario_prueba` | ID del documento de usuario | Sí en la versión actual del código |
-
-Los IDs `unitId` y `exerciseId` son **libres** (strings), pero deben ser únicos dentro de su colección/subcolección.
+Los IDs `unitId` y `exerciseId` son **libres** (strings), pero deben ser únicos dentro de su colección/subcolección. El ID del usuario **no** es libre: debe ser el **UID de Firebase Auth**.
 
 ### Campos esperados por documento
 
@@ -118,9 +228,18 @@ Los IDs `unitId` y `exerciseId` son **libres** (strings), pero deben ser únicos
 | `title` | string | Título en el mapa |
 | `description` | string | Opcional en UI según plantilla |
 | `order` | number | Orden global del camino (**requerido** para queries e índices) |
-| `status` | string | `locked` \| `available` \| `completed` |
 | `icon` | string | Emoji u opcional según UI |
-| `xpReward` | number | **Opcional.** La app **no** suma XP desde el documento de la unidad; la XP que se guarda en `users` sale **solo** de cada documento en `exercises` (`xpReward` por ejercicio). Este campo puede servir como referencia en CMS o panel. |
+| `status` | string | **Obsoleto para la app.** El progreso va en `users/{uid}/progress/{unitId}`. Puedes quitarlo de `units` en Firestore. |
+| `xpReward` | number | **Opcional.** La app **no** suma XP desde el documento de la unidad. |
+
+**`users/{uid}/progress/{unitId}`**
+
+| Campo | Tipo | Notas |
+|-------|------|--------|
+| `status` | string | `locked` \| `available` \| `completed` — **por usuario** |
+| `updatedAt` | string | ISO opcional; la app lo escribe al completar/desbloquear |
+
+**Inicialización:** la primera vez que el usuario abre el mapa sin documentos en `progress`, `initializeUserProgress()` crea uno por unidad: la de menor `order` → `available`, el resto → `locked`.
 
 **`units/{unitId}/exercises/{exerciseId}`**
 
@@ -160,59 +279,53 @@ Lógica: `computeNextStreak()` en `src/app/services/data.service.ts`.
 
 ## Desbloqueo de unidades y progresión del mapa
 
-La progresión del camino de aprendizaje **no** se calcula en el componente del mapa: se basa en el campo **`status`** de cada documento en `units/{unitId}` y en el orden numérico **`order`**.
+**Contenido compartido** (`units` + `exercises`) + **progreso por usuario** (`users/{uid}/progress/{unitId}`).
 
-### Estados de una unidad (`status`)
+### Estados (`users/{uid}/progress/{unitId}.status`)
 
-| Valor | Qué significa en la app | UI en el mapa (`LearningPathComponent`) |
-|-------|--------------------------|----------------------------------------|
-| `locked` | Unidad bloqueada; el usuario aún no puede entrar. | Clase CSS `locked` (apariencia atenuada/gris). **No** se muestra el botón **Empezar**. |
-| `available` | Unidad desbloqueada; puede iniciar la lección. | Clase `available`. Botón **Empezar** visible → navega a `/lesson/{unitId}`. |
-| `completed` | El usuario terminó todos los ejercicios de esa unidad al menos una vez (tras `completeUnit`). | Clase `completed` (resaltado, p. ej. verde). Botón **Empezar** sigue visible: puede **repetir** la lección. |
+| Valor | Significado | UI en el mapa |
+|-------|-------------|---------------|
+| `locked` | Aún no desbloqueada para este usuario | Sin botón, estilo atenuado |
+| `available` | Puede entrar a la lección | Borde azul, fondo gris, **Empezar** |
+| `completed` | Terminó todos los ejercicios al menos una vez | Verde, botón **Repetir** |
 
-El mapa lista todas las unidades con `getUnitsFromFirebase()` (tiempo real con `onSnapshot`). Cada fila muestra `title`, `icon`, el texto del `status` y el botón según la tabla anterior.
+`getUnitsFromFirebase()` escucha en tiempo real **`units`** y **`users/{uid}/progress`**, y fusiona ambos (el `status` en `units/{unitId}` **ya no se usa**).
 
-### Cómo se desbloquea la siguiente unidad (flujo automático)
+### Inicialización al primer acceso al mapa
 
-Cuando el usuario acierta el **último ejercicio** de una lección, `LessonComponent` llama a `DataService.completeUnit(unitId)` **después** de sumar la XP del último ejercicio y aplicar la racha.
+Si el usuario no tiene documentos en `progress`:
 
-Pasos internos de `completeUnit(unitId)`:
+1. `initializeUserProgress(uid)` lee todas las `units` por `order`.
+2. Crea `users/{uid}/progress/{unitId}` para cada una.
+3. La de **menor `order`** → `available`; el resto → `locked`.
 
-1. **Marca la unidad actual** en Firestore: `units/{unitId}` → `status: 'completed'`.
-2. **Lee todas las unidades** de la colección `units`, ordenadas por `order` (ascendente).
-3. **Busca la siguiente** unidad cuyo `order` sea mayor que el de la unidad completada.
-4. Si esa siguiente unidad existe y su `status` es **`locked`**, la actualiza a **`available`**.
-5. **Devuelve** a la UI:
-   - `nextUnitUnlocked: true` y `nextUnitTitle` (título de esa unidad), si se desbloqueó algo;
-   - `nextUnitUnlocked: false` si no había siguiente, ya estaba disponible o no estaba en `locked`.
+Ocurre al abrir **Mi Camino** la primera vez (registro o cuenta antigua sin progreso).
 
-La primera unidad del camino debe crearse en Firebase con `status: 'available'` (o la que quieras como punto de entrada). El resto suele empezar en `locked` para que solo se abran al completar la anterior.
+### Completar y desbloquear (`completeUnit`)
+
+Tras acertar el **último ejercicio**:
+
+1. `users/{uid}/progress/{unitId}` → `status: 'completed'`.
+2. Busca la siguiente unidad global por `order`.
+3. Si su progreso está en `locked` → pasa a `available` en **`users/{uid}/progress/{nextUnitId}`** (no modifica `units`).
 
 ```mermaid
 flowchart LR
-  A[Usuario completa último ejercicio] --> B[completeUnit unitId]
-  B --> C[units/unitId status completed]
-  B --> D{¿Hay unidad con order mayor?}
-  D -->|No| E[Sin desbloqueo]
-  D -->|Sí| F{¿status locked?}
-  F -->|Sí| G[status available + título a UI]
-  F -->|No| E
+  A[Último ejercicio correcto] --> B[completeUnit]
+  B --> C["users/uid/progress/unitId → completed"]
+  B --> D{¿Siguiente por order?}
+  D -->|Sí y locked| E["users/uid/progress/next → available"]
+  D -->|No| F[Fin]
 ```
 
-### Configuración inicial recomendada en Firestore
+### Qué poner en Firestore (contenido global)
 
-| Unidad (ejemplo) | `order` | `status` inicial |
-|------------------|---------|------------------|
-| Primera del camino | 1 | `available` |
-| Segunda | 2 | `locked` |
-| Tercera | 3 | `locked` |
-| … | n | `locked` |
+En **`units`** solo necesitas: `title`, `icon`, `order`, `description` (opcional). **No** hace falta `status` en `units` para la app.
 
-### Qué **no** hace el desbloqueo hoy
+### Usuarios existentes
 
-- No desbloquea varias unidades a la vez (solo la **inmediata** siguiente por `order`).
-- No revierte unidades si el usuario repite una lección ya completada.
-- No guarda progreso parcial de una unidad a medias (si sale a mitad de lección, la unidad sigue `available` hasta que termine el último ejercicio).
+- Cuenta nueva: progreso se crea solo al abrir el mapa.
+- Si migras desde el sistema antiguo (status en `units` global), cada usuario debe tener su propia subcolección `progress`; el progreso viejo global **no** se migra automáticamente.
 
 ---
 
@@ -239,12 +352,21 @@ Si el `type` no está en la lista, la lección muestra un mensaje de tipo no sop
 | Aspecto | Detalle |
 |---------|---------|
 | **Componente** | `WelcomeComponent` |
-| **Estado actual** | Pantalla placeholder (`welcome works!`). |
-| **Firebase** | No consulta Firestore. |
-| **Navbar** | Visible (usuario puede ir a Inicio / Mapa / Perfil manualmente). |
-| **Entrada a la app** | La ruta `/` redirige aquí; no hay login ni onboarding implementado. |
+| **Firebase** | No consulta Firestore ni Auth. |
+| **Navbar** | Oculta. |
+| **Acción** | Botón **Entrar o registrarse** → `/login`. |
 
-**Uso previsto:** pantalla de bienvenida, elegir idioma o botón “Empezar” hacia `/dashboard` o `/learning-path` (pendiente de diseño).
+### Login (`/login`)
+
+| Aspecto | Detalle |
+|---------|---------|
+| **Componente** | `LoginComponent` |
+| **Servicio** | `AuthService` (`signIn`, `signUp`, `signOut`) |
+| **Modos** | **Entrar** (login) y **Registrarse** (crea cuenta + doc `users/{uid}`) |
+| **Tras éxito** | Navega a `/dashboard` |
+| **Si ya hay sesión** | `guestGuard` redirige a `/dashboard` |
+| **Navbar** | Oculta |
+| **Errores** | Mensajes en español según código Firebase (`mapAuthError`) |
 
 ---
 
@@ -253,7 +375,7 @@ Si el `type` no está en la lista, la lección muestra un mensaje de tipo no sop
 | Aspecto | Detalle |
 |---------|---------|
 | **Componente** | `DashboardComponent` |
-| **Datos** | `DataService.getUserStats()` → documento `users/usuario_prueba` en tiempo real (`onSnapshot`). |
+| **Datos** | `getUserStats()` → `users/{uid}` del usuario autenticado (`onSnapshot`). |
 | **Mientras carga** | Mensaje “Conectando con la base de datos de Firebase…”. |
 | **Si falla** | `catchError` devuelve `null` y la vista no rompe (estado vacío). |
 
@@ -289,7 +411,10 @@ Si el `type` no está en la lista, la lección muestra un mensaje de tipo no sop
 
 - Cada ítem: círculo con `icon`, `title`, texto del `status`, conector vertical (excepto el último).
 - Clase del nodo: `[ngClass]="unit.status"` → estilos `locked` / `available` / `completed`.
-- Botón **Empezar** solo si `unit.status !== 'locked'` → `routerLink` a `/lesson/{{ unit.id }}`.
+- Si `status === 'available'`: botón **Empezar** (estilo azul).
+- Si `status === 'completed'`: botón **Repetir** (estilo verde outline).
+- Si `status === 'locked'`: sin botón.
+- Ambos botones navegan a `/lesson/{{ unit.id }}`.
 
 **Actualización en vivo:** al completar una unidad en la lección, Firestore cambia `status` y el mapa se refresca solo (misma suscripción `onSnapshot`).
 
@@ -362,12 +487,13 @@ Este componente **no escribe en Firebase**; solo presenta resultados y emite eve
 | Aspecto | Detalle |
 |---------|---------|
 | **Componente** | `ProfileComponent` |
-| **Datos** | `getUserStats()` con `startWith` loading → mismo documento `users/usuario_prueba`. |
+| **Datos** | `getUserStats()` → `users/{uid}` del usuario autenticado. |
 
 **Estados:**
 
 - Cargando → “Cargando perfil…”.
-- Sin documento → mensaje indicando que falta `users/usuario_prueba`.
+- Sin documento → mensaje para crear `users/{uid}` o volver a registrarse.
+- **Cerrar sesión** → `AuthService.signOut()` → `/login`.
 - Con datos → avatar (inicial de `username`), nombre, nivel, rejilla de estadísticas.
 
 **Tarjetas:**
@@ -398,8 +524,8 @@ Durante una lección el usuario solo sale con **✕** en la lección o al termin
 
 ## Resumen del flujo típico del usuario
 
-1. Abre la app → `/welcome` (placeholder).
-2. Navbar → **Inicio** (`/dashboard`): ve XP, nivel y racha.
+1. Abre la app → `/welcome` → **Entrar o registrarse** → `/login`.
+2. Inicia sesión o regístrate → `/dashboard` (XP, nivel, racha de `users/{uid}`).
 3. **Ir al Mapa** → `/learning-path`: ve unidades; solo las no `locked` tienen **Empezar**.
 4. **Empezar** → `/lesson/{unitId}`: resuelve ejercicios uno a uno; gana XP por acierto.
 5. Al acertar el último ejercicio: se actualiza usuario (XP, nivel, racha), unidad `completed`, posible desbloqueo de la siguiente → pantalla **`LessonCompleteComponent`**.
@@ -412,7 +538,11 @@ Durante una lección el usuario solo sale con **✕** en la lección o al termin
 
 - Rutas: `src/app/app.routes.ts`
 - Navbar: `src/app/components/shared/navbar/`
-- Servicio: `src/app/services/data.service.ts`
+- Auth: `src/app/services/auth.service.ts`
+- Guards: `src/app/guards/auth.guard.ts`, `src/app/guards/guest.guard.ts`
+- Login: `src/app/components/login/`
+- Servicio datos: `src/app/services/data.service.ts`
+- Progreso por usuario: `src/app/models/unit-progress.types.ts`
 - Tipos de ejercicio: `src/app/models/exercise.types.ts`
 - Normalización Firestore (strings → números, `words` → `wordBank`): `src/app/models/exercise-from-firestore.ts`
 - Learning path: `src/app/components/learning-path/`

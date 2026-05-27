@@ -2,16 +2,15 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.4.
 
-## Firebase (usuario y racha)
+## Firebase (Auth + Firestore)
 
-El documento `users/usuario_prueba` en Firestore debe incluir al menos:
+1. En Firebase Console: activa **Authentication** → **Email/Password**.
+2. Configura reglas de Firestore (ver `docs/flujo-app.md`).
+3. Cada usuario tiene su perfil en `users/{uid}` (se crea al registrarse).
 
-- `username` (string), `xp` (number), `level` (string)
-- **Racha diaria:** `streak` (number) y `lastStreakDate` (string `YYYY-MM-DD` en fecha local). Se crean/actualizan automáticamente al completar una lección con éxito (`DataService.addXP`).
+Campos del perfil: `username`, `email`, `xp`, `level`, `streak`, `lastStreakDate`.
 
-Si el documento no existe, la app puede mostrar estados vacíos hasta que existan datos.
-
-Documentación del flujo de pantallas: `docs/flujo-app.md`.
+Documentación completa (pasos en consola, flujo de pantallas): `docs/flujo-app.md`.
 
 ## Development server
 

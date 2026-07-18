@@ -1,0 +1,54 @@
+<div class="translation-lesson">
+  <!-- Encabezado con tipo de ejercicio -->
+  <div class="exercise-header">
+    <div class="exercise-type-badge">{{ exerciseTypeLabel }}</div>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progress"></div>
+    </div>
+    <div class="exercise-counter">{{ exerciseIndex + 1 }}/{{ totalExercises }}</div>
+  </div>
+
+  <!-- Contenido del ejercicio -->
+  <div class="exercise-content" *ngIf="exercise">
+    <p class="question">{{ exercise.question }}</p>
+
+    <!-- Audio (si existe) -->
+    <div *ngIf="exercise.type === 'listen_and_write' && exercise.audioUrl" class="audio-section">
+      <button
+        (click)="playAudio()"
+        [disabled]="isPlaying"
+        class="btn btn-audio"
+        type="button"
+      >
+        <span class="icon">🔊</span>
+        {{ isPlaying ? 'Reproduciendo...' : 'Escuchar' }}
+      </button>
+    </div>
+
+    <!-- Textarea para la respuesta -->
+    <div class="text-input-container">
+      <p class="label">
+        {{ exercise.type === 'listen_and_write' ? 'Escribe lo que escuches:' : 'Escribe la traducción:' }}
+      </p>
+      <textarea
+        [(ngModel)]="textAnswer"
+        placeholder="Escribe tu respuesta aquí..."
+        class="text-input"
+        rows="4"
+      ></textarea>
+      <p class="character-count">{{ textAnswer.length }} caracteres</p>
+    </div>
+  </div>
+
+  <!-- Botón verificar -->
+  <div class="action-buttons">
+    <button
+      (click)="checkAnswer()"
+      [disabled]="!canSubmit()"
+      class="btn btn-primary"
+      type="button"
+    >
+      COMPROBAR
+    </button>
+  </div>
+</div>

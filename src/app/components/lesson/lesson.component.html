@@ -15,7 +15,9 @@
 } @else {
   <div class="lesson-container">
     @if (loading) {
-      <p class="lesson-status">Cargando ejercicios...</p>
+      <div class="lesson-status">
+        <app-loading-spinner></app-loading-spinner>
+      </div>
     } @else if (loadError) {
       <p class="lesson-status lesson-error">{{ loadError }}</p>
       <button routerLink="/learning-path" type="button" class="close-btn-inline">
@@ -40,114 +42,34 @@
           >
         </nav>
 
-        <main class="exercise-area">
-          @switch (ex.type) {
-            @case ('word_order') {
-              <h2 class="exercise-title">{{ ex.question }}</h2>
-              <div class="answer-slots">
-                @for (word of selectedWords; track $index) {
-                  <button
-                    type="button"
-                    class="word-bubble selected"
-                    (click)="deselectWord(word, $index)"
-                  >
-                    {{ word }}
-                  </button>
-                }
-              </div>
-              <div class="options-grid">
-                @for (word of availableWords; track $index) {
-                  <button
-                    type="button"
-                    class="word-bubble"
-                    (click)="selectWord(word, $index)"
-                  >
-                    {{ word }}
-                  </button>
-                }
-              </div>
-            }
-            @case ('translate_text') {
-              <h2 class="exercise-title">{{ ex.question }}</h2>
-              <textarea
-                class="text-input"
-                [(ngModel)]="textAnswer"
-                rows="3"
-                placeholder="Escribe la traducción..."
-              ></textarea>
-            }
-            @case ('listen_and_write') {
-              <h2 class="exercise-title">{{ ex.question }}</h2>
-              @if (ex.audioUrl) {
-                <audio [src]="ex.audioUrl" controls class="audio-el"></audio>
-              } @else {
-                <p class="hint">Sin archivo de audio — escribe lo que oyes.</p>
-              }
-              <input
-                type="text"
-                class="text-input single-line"
-                [(ngModel)]="textAnswer"
-                placeholder="Escribe lo que escuchaste..."
-              />
-            }
-            @case ('multiple_choice') {
-              <h2 class="exercise-title">{{ ex.question }}</h2>
-              <div class="choices-list">
-                @for (c of displayChoices; track c) {
-                  <label class="choice-row">
-                    <input
-                      type="radio"
-                      name="mc-{{ ex.id }}"
-                      [(ngModel)]="selectedChoice"
-                      [value]="c"
-                    />
-                    <span>{{ c }}</span>
-                  </label>
-                }
-              </div>
-            }
-            @case ('match_words') {
-              <h2 class="exercise-title">{{ ex.question }}</h2>
-              @if (ex.matchPairs?.length) {
-                <div class="match-grid">
-                  @for (p of ex.matchPairs; track p.left) {
-                    <div class="match-row">
-                      <span class="match-left">{{ p.left }}</span>
-                      <select
-                        [(ngModel)]="matchSelections[p.left]"
-                        class="match-select"
-                      >
-                        <option value="">—</option>
-                        @for (r of shuffledRights; track r) {
-                          <option [ngValue]="r">{{ r }}</option>
-                        }
-                      </select>
-                    </div>
-                  }
-                </div>
-              } @else {
-                <p class="hint">Este ejercicio no tiene pares configurados.</p>
-              }
-            }
-            @default {
+        <!-- Componente especializado por tipo de lección -->
+        @switch (lessonType) {
+          @case ('vocabulary') {
+            <app-vocabulary-lesson
+              [exercise]="ex"
+              [exerciseIndex]="currentIndex"
+              [totalExercises]="exercises.length"
+              (answerSubmitted)="onExerciseSubmitted($event)"
+            />
+          }
+          @case ('translation') {
+            <app-translation-lesson
+              [exercise]="ex"
+              [exerciseIndex]="currentIndex"
+              [totalExercises]="exercises.length"
+              (answerSubmitted)="onExerciseSubmitted($event)"
+            />
+          }
+          @default {
+            <div class="lesson-container">
               <p class="lesson-error">
                 Tipo de ejercicio no soportado: <strong>{{ ex.type }}</strong>
               </p>
-            }
+            </div>
           }
-        </main>
-
-        <footer class="lesson-footer">
-          <button
-            type="button"
-            class="check-btn"
-            [disabled]="!canSubmit()"
-            (click)="checkAnswer()"
-          >
-            COMPROBAR
-          </button>
-        </footer>
+        }
       }
     }
   </div>
 }
+

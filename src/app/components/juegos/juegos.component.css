@@ -1,0 +1,139 @@
+.juegos-container {
+  padding: 20px;
+  background-color: #f4f7f6;
+  min-height: 100vh;
+}
+
+.juegos-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.btn-back {
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.intro-card {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 20px;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.intro-icon {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.intro-card h2 {
+  margin: 0 0 10px;
+}
+
+.intro-card p {
+  margin: 0;
+  opacity: 0.95;
+  line-height: 1.5;
+}
+
+.games-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.game-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+.game-icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.game-info {
+  flex: 1;
+}
+
+.game-info h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  color: #333;
+}
+
+.game-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.game-level {
+  display: inline-block;
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.game-examples {
+  margin-top: 10px;
+}
+
+.examples-title {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f766e;
+  margin-bottom: 6px;
+}
+
+.game-examples ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #334155;
+  font-size: 13px;
+}
+
+.game-examples li + li {
+  margin-top: 4px;
+}
+
+.game-badge {
+  background: #e2e8f0;
+  color: #475569;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.game-badge--available {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.empty-state,
+.loading-state {
+  text-align: center;
+  color: #666;
+  padding: 24px 0;
+}

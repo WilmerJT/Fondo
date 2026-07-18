@@ -1,0 +1,35 @@
+[
+  {
+    "id": "story_gato_curioso",
+    "title": "El gato curioso",
+    "description": "Una aventura sencilla para principiantes con vocabulario del día a día.",
+    "icon": "🐱",
+    "order": 1,
+    "level": "Principiante A1",
+    "status": "coming_soon",
+    "readingTimeMinutes": 3,
+    "content": "Había una vez un gato muy curioso. Cada mañana salía al jardín y miraba las flores. Un día vio un pájaro azul en el árbol. El gato no quiso atraparlo; solo quiso saludarlo. «Hola, pájaro», dijo el gato. El pájaro cantó y voló lejos. El gato volvió a casa feliz."
+  },
+  {
+    "id": "story_casa_azul",
+    "title": "La casa azul",
+    "description": "Historia intermedia sobre una familia y su nuevo hogar en la ciudad.",
+    "icon": "🏠",
+    "order": 2,
+    "level": "Estudiante A2",
+    "status": "coming_soon",
+    "readingTimeMinutes": 5,
+    "content": "La familia Ruiz se mudó a una casa azul cerca del parque. Los niños exploraron cada habitación mientras los padres organizaban las cajas. Por la tarde prepararon té y miraron la ciudad desde la ventana. «Aquí empezará nuestra nueva vida», dijo la madre. Todos sonrieron."
+  },
+  {
+    "id": "story_noche_parque",
+    "title": "Noche en el parque",
+    "description": "Relato con más detalle narrativo para practicar tiempos verbales.",
+    "icon": "🌙",
+    "order": 3,
+    "level": "Intermedio B1",
+    "status": "coming_soon",
+    "readingTimeMinutes": 7,
+    "content": "Cuando el sol se ocultó, el parque quedó en silencio. Ana había caminado durante horas y decidió sentarse en un banco. Recordaba las conversaciones del día y escribía ideas en su cuaderno. De pronto escuchó pasos suaves; era un perro perdido que buscaba compañía. Ana lo acompañó hasta la entrada y llamó al número del collar. A medianoche, el dueño llegó agradecido."
+  }
+]

@@ -1,0 +1,78 @@
+[
+  {
+    "id": "paint",
+    "title": "Pintar",
+    "description": "Pinta imágenes y elige colores para aprender palabras en inglés mientras practicas vocabulario visual.",
+    "icon": "🎨",
+    "order": 1,
+    "type": "paint",
+    "level": "Principiante A1",
+    "status": "available",
+    "xpReward": 25,
+    "examples": [
+      "red → red",
+      "blue → blue",
+      "green → green",
+      "yellow → yellow",
+      "orange → orange",
+      "purple → purple"
+    ]
+  },
+  {
+    "id": "crossword",
+    "title": "Crucigrama",
+    "description": "Completa palabras en inglés con pistas simples y aprende vocabulario de forma divertida.",
+    "icon": "🧩",
+    "order": 2,
+    "type": "crossword",
+    "level": "Estudiante A2",
+    "status": "available",
+    "xpReward": 30,
+    "examples": [
+      "cat",
+      "sun",
+      "book",
+      "tree",
+      "dog",
+      "house"
+    ]
+  },
+  {
+    "id": "word_search",
+    "title": "Sopa de letras",
+    "description": "Encuentra palabras en inglés escondidas en una sopa de letras para reforzar la escritura.",
+    "icon": "🔍",
+    "order": 3,
+    "type": "word_search",
+    "level": "Principiante A1",
+    "status": "available",
+    "xpReward": 20,
+    "examples": [
+      "apple",
+      "banana",
+      "carrot",
+      "water",
+      "house",
+      "flower"
+    ]
+  },
+  {
+    "id": "garden",
+    "title": "Huerta",
+    "description": "Aprende palabras sobre alimentos y plantas en inglés mientras organizas tu huerta virtual.",
+    "icon": "🌱",
+    "order": 4,
+    "type": "garden",
+    "level": "Estudiante A2",
+    "status": "available",
+    "xpReward": 35,
+    "examples": [
+      "carrot → carrot",
+      "tomato → tomato",
+      "lettuce → lettuce",
+      "onion → onion",
+      "potato → potato",
+      "pepper → pepper"
+    ]
+  }
+]

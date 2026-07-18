@@ -1,0 +1,45 @@
+<div class="cuentos-container">
+  <header class="cuentos-header">
+    <button routerLink="/dashboard" class="btn-back" type="button">←</button>
+    <h1>Cuentos</h1>
+  </header>
+
+  <section class="intro-card">
+    <span class="intro-icon">📖</span>
+    <h2>Historias para aprender</h2>
+    <p>
+      Lee cuentos cortos en el idioma que estudias y mejora tu comprensión
+      lectora.
+    </p>
+  </section>
+
+  <div class="stories-list" *ngIf="cuentos$ | async as cuentos; else loading">
+    @if (cuentos.length === 0) {
+      <p class="empty-state">No hay cuentos disponibles todavía.</p>
+    } @else {
+      @for (cuento of cuentos; track cuento.id) {
+        <article class="story-card">
+          <span class="story-icon">{{ cuento.icon }}</span>
+          <div class="story-info">
+            <h3>{{ cuento.title }}</h3>
+            <p>{{ cuento.description }}</p>
+            <span class="story-level">{{ cuento.level }}</span>
+            @if (cuento.readingTimeMinutes) {
+              <span class="story-time">{{ cuento.readingTimeMinutes }} min</span>
+            }
+          </div>
+          <span
+            class="story-badge"
+            [class.story-badge--available]="cuento.status === 'available'"
+          >
+            {{ statusLabel(cuento.status) }}
+          </span>
+        </article>
+      }
+    }
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="loading-state">Cargando cuentos desde Firebase...</p>
+</ng-template>

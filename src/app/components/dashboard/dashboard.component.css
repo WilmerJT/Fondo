@@ -1,8 +1,9 @@
 css .dashboard {
-  padding: 20px;
+  padding: 20px 20px 140px;
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9fafb;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .header {
@@ -59,6 +60,56 @@ css .dashboard {
   cursor: pointer;
   width: 100%;
   margin-top: 10px;
+  position: relative;
+  z-index: 10;
+}
+
+.feature-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  position: relative;
+  z-index: 2;
+}
+
+.feature-card {
+  color: white;
+  padding: 25px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.feature-card h3 {
+  margin: 0 0 8px;
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.95;
+  line-height: 1.4;
+}
+
+.feature-icon {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.feature-card--games {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.feature-card--stories {
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+}
+
+.btn-primary--games {
+  color: #11998e;
+}
+
+.btn-primary--stories {
+  color: #c27803;
 }
 
 .stats-grid {

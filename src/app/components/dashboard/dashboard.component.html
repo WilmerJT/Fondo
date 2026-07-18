@@ -16,7 +16,26 @@
     <h3>Nivel: {{ stats.level }}</h3>
     <p>XP Acumulada: {{ stats.xp }}</p>
     <p class="streak-line">Racha diaria: {{ stats.streak ?? 0 }} 🔥</p>
-    <button class="btn-primary" routerLink="/learning-path">Ir al Mapa</button>
+    <a class="btn-primary" routerLink="/learning-path">Ir al Mapa</a>
+  </div>
+
+  <div class="feature-cards">
+    <div class="feature-card feature-card--games">
+      <span class="feature-icon">🎮</span>
+      <h3>Juegos</h3>
+      <p>Practica con minijuegos divertidos</p>
+      <a class="btn-primary btn-primary--games" routerLink="/juegos">
+        Explorar Juegos
+      </a>
+    </div>
+    <div class="feature-card feature-card--stories">
+      <span class="feature-icon">📖</span>
+      <h3>Cuentos</h3>
+      <p>Lee historias en otros idiomas</p>
+      <a class="btn-primary btn-primary--stories" routerLink="/cuentos">
+        Leer Cuentos
+      </a>
+    </div>
   </div>
 </div>
 <ng-template #loading>

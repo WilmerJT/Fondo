@@ -1,0 +1,10 @@
+<div
+  class="loading-spinner"
+  [class.inline]="inline"
+  role="status"
+  aria-live="polite"
+>
+  <span class="spinner" aria-hidden="true"></span>
+  <span *ngIf="text" class="loading-text">{{ text }}</span>
+  <span *ngIf="!text" class="visually-hidden">Cargando...</span>
+</div>

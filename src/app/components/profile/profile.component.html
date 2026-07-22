@@ -1,7 +1,7 @@
 @if (vm$ | async; as vm) {
   @if (vm.loading) {
     <div class="profile-container profile-loading">
-      <p>Cargando perfil...</p>
+      <app-loading-spinner></app-loading-spinner>
     </div>
   } @else {
     @if (!vm.user) {

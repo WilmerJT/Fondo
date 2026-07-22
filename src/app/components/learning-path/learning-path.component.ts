@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { Observable } from 'rxjs';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 @Component({
   selector: 'app-learning-path',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LoadingSpinnerComponent],
   templateUrl: './learning-path.component.html',
   styleUrl: './learning-path.component.css',
 })

@@ -5,10 +5,11 @@ import { DataService } from '../../services/data.service';
 import { AuthService } from '../../services/auth.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LoadingSpinnerComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })

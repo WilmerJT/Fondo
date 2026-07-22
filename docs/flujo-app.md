@@ -570,3 +570,63 @@ Durante una lección el usuario solo sale con **✕** en la lección o al termin
 - Learning path: `src/app/components/learning-path/`
 - Lección: `src/app/components/lesson/`
 - Pantalla fin de lección (solo UI): `src/app/components/lesson-complete/`
+- **Vocabulario** (lecciones especializadas): `src/app/components/lesson/vocabulary-lesson.component.ts/html/css`
+- **Traducción** (lecciones especializadas): `src/app/components/lesson/translation-lesson.component.ts/html/css`
+
+---
+
+## Componentes especializados de lecciones
+
+A partir del refactor, `LessonComponent` delega la UI de ejercicios a componentes especializados según el tipo:
+
+### `VocabularyLessonComponent`
+
+| Propiedad | Tipo |
+|-----------|------|
+| **Maneja tipos** | `word_order`, `multiple_choice`, `match_words` |
+| **Archivo** | `src/app/components/lesson/vocabulary-lesson.component.ts` |
+| **Entrada** | `@Input exercise`, `@Input exerciseIndex`, `@Input totalExercises` |
+| **Salida** | `@Output answerSubmitted: EventEmitter<ExerciseResult>` |
+| **UI especial** | Badges de tipo, barra de progreso, validación de respuesta |
+
+**Tipos soportados:**
+- `word_order`: ordena palabras del banco hacia la respuesta.
+- `multiple_choice`: selecciona una opción de una lista.
+- `match_words`: empareja términos izquierda-derecha con dropdowns.
+
+### `TranslationLessonComponent`
+
+| Propiedad | Tipo |
+|-----------|------|
+| **Maneja tipos** | `translate_text`, `listen_and_write` |
+| **Archivo** | `src/app/components/lesson/translation-lesson.component.ts` |
+| **Entrada** | `@Input exercise`, `@Input exerciseIndex`, `@Input totalExercises` |
+| **Salida** | `@Output answerSubmitted: EventEmitter<ExerciseResult>` |
+| **UI especial** | Textarea, botón reproducir audio, contador de caracteres |
+
+**Tipos soportados:**
+- `translate_text`: escribe la traducción en un textarea.
+- `listen_and_write`: escucha (opcionalmente) `audioUrl` y escribe la respuesta.
+
+### Cambios en `LessonComponent`
+
+`LessonComponent` ahora:
+1. Lee el tipo del primer ejercicio.
+2. Determina `lessonType` (`'vocabulary'` | `'translation'` | `null`).
+3. Renderiza el componente especializado correspondiente.
+4. Escucha `answerSubmitted` y gestiona XP, racha, desbloqueos.
+
+**Evento `ExerciseResult`:**
+```typescript
+interface ExerciseResult {
+  correct: boolean;     // ¿Respuesta correcta?
+  xpEarned: number;     // XP a sumar (0 si incorrecto)
+  exerciseId?: string;  // ID del ejercicio (opcional)
+}
+```
+
+**Flujo:**
+1. Usuario interactúa con el componente especializado.
+2. Presiona COMPROBAR → `checkAnswer()` en el componente hijo.
+3. Emite `answerSubmitted` con el resultado.
+4. Padre (`LessonComponent`) procesa y actualiza Firebase (si es correcto).

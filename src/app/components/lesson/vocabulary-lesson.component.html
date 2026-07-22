@@ -1,0 +1,110 @@
+<div class="vocabulary-lesson">
+  <!-- Encabezado con tipo de ejercicio -->
+  <div class="exercise-header">
+    <div class="exercise-type-badge">{{ exerciseTypeLabel }}</div>
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="progress"></div>
+    </div>
+    <div class="exercise-counter">{{ exerciseIndex + 1 }}/{{ totalExercises }}</div>
+  </div>
+
+  <!-- Contenido del ejercicio -->
+  <div class="exercise-content" *ngIf="exercise">
+    <p class="question">{{ exercise.question }}</p>
+
+    <!-- Word Order (Ordenar palabras) -->
+    <div *ngIf="exercise.type === 'word_order'" class="word-order-container">
+      <div class="words-available">
+        <p class="label">Palabras disponibles:</p>
+        <div class="word-bank">
+          <button
+            *ngFor="let word of availableWords; let i = index"
+            (click)="selectWord(word, i)"
+            class="word-btn available"
+            type="button"
+          >
+            {{ word }}
+          </button>
+        </div>
+      </div>
+
+      <div class="selected-words">
+        <p class="label">Tu respuesta:</p>
+        <div class="selected-order">
+          <button
+            *ngFor="let word of selectedWords; let i = index"
+            (click)="deselectWord(word, i)"
+            class="word-btn selected"
+            type="button"
+          >
+            {{ word }}
+            <span class="remove-icon">✕</span>
+          </button>
+          <span *ngIf="selectedWords.length === 0" class="placeholder">
+            Selecciona las palabras en orden
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Multiple Choice (Opción múltiple) -->
+    <div *ngIf="exercise.type === 'multiple_choice'" class="multiple-choice-container">
+      <div class="choices">
+        <label *ngFor="let choice of displayChoices" class="choice-item">
+          <input
+            type="radio"
+            name="choice"
+            [value]="choice"
+            [(ngModel)]="selectedChoice"
+          />
+          <span class="choice-text">{{ choice }}</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Match Words (Emparejar palabras) -->
+    <div *ngIf="exercise.type === 'match_words'" class="match-words-container">
+      <div class="match-grid">
+        <!-- Columna izquierda -->
+        <div class="match-column">
+          <p class="label">Origen:</p>
+          <div class="match-items">
+            <div *ngFor="let pair of exercise.matchPairs" class="match-left">
+              {{ pair.left }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha (seleccionable) -->
+        <div class="match-column">
+          <p class="label">Destino:</p>
+          <div class="match-items">
+            <div *ngFor="let pair of exercise.matchPairs; let i = index" class="match-right">
+              <select
+                [(ngModel)]="matchSelections[pair.left]"
+                class="match-select"
+              >
+                <option value="">-- Selecciona --</option>
+                <option *ngFor="let right of shuffledRights" [value]="right">
+                  {{ right }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón verificar -->
+  <div class="action-buttons">
+    <button
+      (click)="checkAnswer()"
+      [disabled]="!canSubmit()"
+      class="btn btn-primary"
+      type="button"
+    >
+      COMPROBAR
+    </button>
+  </div>
+</div>

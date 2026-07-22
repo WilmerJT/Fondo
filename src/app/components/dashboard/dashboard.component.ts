@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LoadingSpinnerComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })

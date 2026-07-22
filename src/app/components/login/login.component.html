@@ -75,7 +75,7 @@
 
       <button type="submit" class="login-submit" [disabled]="loading">
         @if (loading) {
-          Espera...
+          <app-loading-spinner [inline]="true"></app-loading-spinner>
         } @else if (mode === 'login') {
           Iniciar sesión
         } @else {

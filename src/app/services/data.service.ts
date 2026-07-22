@@ -17,11 +17,14 @@ import {
   Observable,
   combineLatest,
   from,
+  map,
   of,
   shareReplay,
   switchMap,
 } from 'rxjs';
 import type { ExerciseDoc } from '../models/exercise.types';
+import type { JuegoDoc, JuegoStatus, JuegoType } from '../models/juego.types';
+import type { CuentoDoc, CuentoStatus } from '../models/cuento.types';
 import type { UnitProgressStatus } from '../models/unit-progress.types';
 import { normalizeExerciseFromFirestore } from '../models/exercise-from-firestore';
 import { AuthService } from './auth.service';
@@ -455,5 +458,118 @@ export class DataService {
         return;
       }
     });
+  }
+
+  getJuegosFromFirebase(): Observable<JuegoDoc[]> {
+    return this.watchOrderedCollection('juegos', (id, data) =>
+      this.mapJuegoDoc(id, data),
+    ).pipe(map((juegos) => juegos.filter((juego) => this.isAllowedJuego(juego))));
+  }
+
+  getCuentosFromFirebase(): Observable<CuentoDoc[]> {
+    return this.watchOrderedCollection('cuentos', (id, data) =>
+      this.mapCuentoDoc(id, data),
+    );
+  }
+
+  private watchOrderedCollection<T>(
+    collectionName: string,
+    mapper: (id: string, data: Record<string, unknown>) => T,
+  ): Observable<T[]> {
+    return new Observable((observer) => {
+      const colRef = collection(this.firestore, collectionName);
+      const q = query(colRef, orderBy('order', 'asc'));
+      const unsubscribe = onSnapshot(
+        q,
+        (querySnapshot) => {
+          const items: T[] = [];
+          querySnapshot.forEach((docSnap) => {
+            items.push(
+              mapper(docSnap.id, docSnap.data() as Record<string, unknown>),
+            );
+          });
+          items.sort((a, b) => {
+            const orderA = (a as { order?: number }).order ?? 0;
+            const orderB = (b as { order?: number }).order ?? 0;
+            return orderA - orderB;
+          });
+          observer.next(items);
+        },
+        (error) => observer.error(error),
+      );
+      return { unsubscribe };
+    });
+  }
+
+  private isAllowedJuego(juego: Pick<JuegoDoc, 'id' | 'type'>): boolean {
+    return ['paint', 'crossword', 'word_search', 'garden'].includes(juego.id) || ['paint', 'crossword', 'word_search', 'garden'].includes(juego.type);
+  }
+
+  private mapJuegoDoc(id: string, data: Record<string, unknown>): JuegoDoc {
+    const orderVal = data['order'];
+    const order =
+      typeof orderVal === 'number' ? orderVal : Number(orderVal) || 0;
+    const xpVal = data['xpReward'];
+    const xpReward =
+      xpVal === undefined
+        ? undefined
+        : typeof xpVal === 'number'
+          ? xpVal
+          : Number(xpVal) || 0;
+    const statusRaw = data['status'];
+    const status: JuegoStatus =
+      statusRaw === 'available' ? 'available' : 'coming_soon';
+    const typeRaw = data['type'];
+    const type: JuegoType =
+      typeRaw === 'paint' || typeRaw === 'crossword' || typeRaw === 'word_search' || typeRaw === 'garden'
+        ? typeRaw
+        : 'paint';
+    const examplesRaw = data['examples'];
+    const examples = Array.isArray(examplesRaw)
+      ? examplesRaw.filter((example): example is string => typeof example === 'string')
+      : [];
+
+    return {
+      id,
+      title: typeof data['title'] === 'string' ? data['title'] : '',
+      description:
+        typeof data['description'] === 'string' ? data['description'] : '',
+      icon: typeof data['icon'] === 'string' ? data['icon'] : '🎮',
+      order,
+      type,
+      level: typeof data['level'] === 'string' ? data['level'] : '',
+      status,
+      xpReward,
+      examples,
+    };
+  }
+
+  private mapCuentoDoc(id: string, data: Record<string, unknown>): CuentoDoc {
+    const orderVal = data['order'];
+    const order =
+      typeof orderVal === 'number' ? orderVal : Number(orderVal) || 0;
+    const minutesVal = data['readingTimeMinutes'];
+    const readingTimeMinutes =
+      minutesVal === undefined
+        ? undefined
+        : typeof minutesVal === 'number'
+          ? minutesVal
+          : Number(minutesVal) || 0;
+    const statusRaw = data['status'];
+    const status: CuentoStatus =
+      statusRaw === 'available' ? 'available' : 'coming_soon';
+
+    return {
+      id,
+      title: typeof data['title'] === 'string' ? data['title'] : '',
+      description:
+        typeof data['description'] === 'string' ? data['description'] : '',
+      icon: typeof data['icon'] === 'string' ? data['icon'] : '📖',
+      order,
+      level: typeof data['level'] === 'string' ? data['level'] : '',
+      status,
+      content: typeof data['content'] === 'string' ? data['content'] : undefined,
+      readingTimeMinutes,
+    };
   }
 }

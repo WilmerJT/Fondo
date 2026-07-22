@@ -1,0 +1,52 @@
+<div class="juegos-container">
+  <header class="juegos-header">
+    <button routerLink="/dashboard" class="btn-back" type="button">←</button>
+    <h1>Juegos</h1>
+  </header>
+
+  <section class="intro-card">
+    <span class="intro-icon">🎮</span>
+    <h2>Aprende jugando</h2>
+    <p>
+      Practica vocabulario y gramática con minijuegos interactivos adaptados a
+      tu nivel.
+    </p>
+  </section>
+
+  <div class="games-list" *ngIf="juegos$ | async as juegos; else loading">
+    @if (juegos.length === 0) {
+      <p class="empty-state">No hay juegos disponibles todavía.</p>
+    } @else {
+      @for (juego of juegos; track juego.id) {
+        <article class="game-card" [routerLink]="getGameRoute(juego.id)">
+          <span class="game-icon">{{ juego.icon }}</span>
+          <div class="game-info">
+            <h3>{{ juego.title }}</h3>
+            <p>{{ juego.description }}</p>
+            <span class="game-level">{{ juego.level }}</span>
+            @if (juego.examples?.length) {
+              <div class="game-examples">
+                <span class="examples-title">Ejemplos</span>
+                <ul>
+                  @for (example of juego.examples; track example) {
+                    <li>{{ example }}</li>
+                  }
+                </ul>
+              </div>
+            }
+          </div>
+          <span
+            class="game-badge"
+            [class.game-badge--available]="juego.status === 'available'"
+          >
+            {{ statusLabel(juego.status) }}
+          </span>
+        </article>
+      }
+    }
+  </div>
+</div>
+
+<ng-template #loading>
+  <p class="loading-state">Cargando juegos desde Firebase...</p>
+</ng-template>

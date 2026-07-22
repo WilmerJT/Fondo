@@ -17,6 +17,28 @@ Angular con rutas planas, shell global (`router-outlet` + navbar inferior), **Fi
 - **`authGuard`**: sin sesión → redirige a `/login`.
 - **`guestGuard`**: con sesión en `/login` → redirige a `/dashboard`.
 
+## Experiencias interactivas y juego del huerto
+
+Además de las rutas y los flujos de aprendizaje, la app incorpora experiencias interactivas dentro del módulo de juegos.
+
+### Comportamiento del huerto
+
+- El juego del huerto se muestra sobre un fondo visual que simula un jardín.
+- Cada planta aparece inicialmente solo con su imagen, manteniendo el fondo visible y evitando saturar la interfaz.
+- Al hacer clic sobre una planta, se despliegan su información, su estado de cuidado y los botones de acción.
+- Los botones permiten regar y limpiar la planta para avanzar su etapa de crecimiento.
+- La tarjeta de cada planta mantiene un contenedor visual transparente hasta activarse, para que el fondo del huerto se vea con mayor claridad.
+- Cada planta puede moverse por el fondo mediante arrastre, con una separación mínima para evitar que se superponga con otra planta.
+- El progreso general del huerto se refleja en una barra superior, actualizada a medida que las plantas reciben cuidado.
+
+### Flujo de interacción
+
+1. El usuario entra al juego del huerto desde la lista de juegos.
+2. Visualiza el fondo y las plantas ubicadas en diferentes posiciones.
+3. Al hacer clic en una planta, se activa su panel interactivo.
+4. El usuario puede regar o limpiar la planta y observar cómo cambia su estado.
+5. El progreso del huerto se actualiza y se muestra en el panel superior.
+
 ## Configuración en Firebase Console (pasos obligatorios)
 
 Proyecto actual: **`app-idioma-85f50`** (debe coincidir con `app.config.ts`).

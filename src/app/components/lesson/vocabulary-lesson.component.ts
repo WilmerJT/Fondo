@@ -3,7 +3,9 @@ import {
   Input,
   Output,
   EventEmitter,
+  OnChanges,
   OnInit,
+  SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +24,7 @@ export interface ExerciseResult {
   templateUrl: './vocabulary-lesson.component.html',
   styleUrl: './vocabulary-lesson.component.css',
 })
-export class VocabularyLessonComponent implements OnInit {
+export class VocabularyLessonComponent implements OnInit, OnChanges {
   @Input() exercise: ExerciseDoc | null = null;
   @Input() exerciseIndex = 0;
   @Input() totalExercises = 0;
@@ -39,6 +41,12 @@ export class VocabularyLessonComponent implements OnInit {
 
   ngOnInit() {
     if (this.exercise) {
+      this.prepareExerciseState(this.exercise);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['exercise'] && this.exercise) {
       this.prepareExerciseState(this.exercise);
     }
   }

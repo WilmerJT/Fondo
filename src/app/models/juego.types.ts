@@ -12,4 +12,6 @@ export interface JuegoDoc {
   status: JuegoStatus;
   xpReward?: number;
   examples?: string[];
+  /** IDs del catálogo compartido en `vocabulary/{wordId}`. */
+  vocabularyIds?: string[];
 }

@@ -20,6 +20,11 @@ service cloud.firestore {
       }
     }
 
+    match /vocabulary/{wordId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
     match /juegos/{juegoId} {
       allow read: if request.auth != null;
       allow write: if request.auth != null;

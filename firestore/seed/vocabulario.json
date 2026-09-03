@@ -1,0 +1,14 @@
+[
+  { "id": "month_january", "category": "months", "sourceText": "January", "targetText": "enero", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "month_february", "category": "months", "sourceText": "February", "targetText": "febrero", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "month_march", "category": "months", "sourceText": "March", "targetText": "marzo", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "month_april", "category": "months", "sourceText": "April", "targetText": "abril", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "attribute_big", "category": "attributes", "sourceText": "big", "targetText": "grande", "partOfSpeech": "adjective", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "attribute_small", "category": "attributes", "sourceText": "small", "targetText": "pequeño", "partOfSpeech": "adjective", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "attribute_red", "category": "attributes", "sourceText": "red", "targetText": "rojo", "partOfSpeech": "adjective", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "attribute_blue", "category": "attributes", "sourceText": "blue", "targetText": "azul", "partOfSpeech": "adjective", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "object_book", "category": "objects", "sourceText": "book", "targetText": "libro", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "object_chair", "category": "objects", "sourceText": "chair", "targetText": "silla", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "object_table", "category": "objects", "sourceText": "table", "targetText": "mesa", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "object_door", "category": "objects", "sourceText": "door", "targetText": "puerta", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" }
+]

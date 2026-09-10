@@ -36,6 +36,8 @@ export interface UnitWithProgress {
   description?: string;
   order: number;
   status: UnitProgressStatus;
+  vocabularyIds?: string[];
+  globalStatus?: UnitProgressStatus;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -210,6 +212,10 @@ export class DataService {
             ? data['description']
             : undefined,
         order,
+        vocabularyIds: Array.isArray(data['vocabularyIds'])
+          ? data['vocabularyIds'].filter((id): id is string => typeof id === 'string')
+          : undefined,
+        globalStatus: this.readUnitStatus(data['status']),
       });
     });
     units.sort((a, b) => a.order - b.order);
@@ -223,9 +229,7 @@ export class DataService {
   async initializeUserProgress(uid: string): Promise<void> {
     const progressCol = collection(this.firestore, 'users', uid, 'progress');
     const existing = await getDocs(progressCol);
-    if (!existing.empty) {
-      return;
-    }
+    const existingIds = new Set(existing.docs.map((progress) => progress.id));
 
     const units = await this.fetchGlobalUnitsList();
     if (units.length === 0) {
@@ -236,15 +240,18 @@ export class DataService {
     const now = new Date().toISOString();
 
     units.forEach((unit, index) => {
-      const status: UnitProgressStatus =
-        index === 0 ? 'available' : 'locked';
-      batch.set(doc(progressCol, unit.id), {
-        status,
-        updatedAt: now,
-      });
+      if (existingIds.has(unit.id)) return;
+      const status: UnitProgressStatus = unit.globalStatus === 'available'
+        ? 'available'
+        : existing.empty && index === 0
+          ? 'available'
+          : 'locked';
+      batch.set(doc(progressCol, unit.id), { status, updatedAt: now });
     });
 
-    await batch.commit();
+    if (units.some((unit) => !existingIds.has(unit.id))) {
+      await batch.commit();
+    }
   }
 
   private watchGlobalUnits(): Observable<Omit<UnitWithProgress, 'status'>[]> {
@@ -271,6 +278,10 @@ export class DataService {
                   ? data['description']
                   : undefined,
               order,
+              vocabularyIds: Array.isArray(data['vocabularyIds'])
+                ? data['vocabularyIds'].filter((id): id is string => typeof id === 'string')
+                : undefined,
+              globalStatus: this.readUnitStatus(data['status']),
             });
           });
           units.sort((a, b) => a.order - b.order);
@@ -319,10 +330,22 @@ export class DataService {
     units: Omit<UnitWithProgress, 'status'>[],
     progress: Map<string, UnitProgressStatus>,
   ): UnitWithProgress[] {
-    return units.map((unit) => ({
-      ...unit,
-      status: progress.get(unit.id) ?? 'locked',
-    }));
+    return units.map((unit) => {
+      const userStatus = progress.get(unit.id);
+      const status: UnitProgressStatus =
+        userStatus === 'completed'
+          ? 'completed'
+          : unit.globalStatus === 'available'
+            ? 'available'
+            : userStatus ?? unit.globalStatus ?? 'locked';
+      return { ...unit, status };
+    });
+  }
+
+  private readUnitStatus(value: unknown): UnitProgressStatus | undefined {
+    return value === 'locked' || value === 'available' || value === 'completed'
+      ? value
+      : undefined;
   }
 
   /**
@@ -343,24 +366,23 @@ export class DataService {
             if (units.length === 0) {
               return of([]);
             }
-            if (progressMap.size === 0) {
-              return from(this.initializeUserProgress(uid)).pipe(
-                switchMap(() =>
-                  of(
-                    this.mergeUnitsWithProgress(
-                      units,
-                      new Map(
-                        units.map((u, i) => [
-                          u.id,
-                          (i === 0 ? 'available' : 'locked') as UnitProgressStatus,
-                        ]),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            }
-            return of(this.mergeUnitsWithProgress(units, progressMap));
+            return from(this.initializeUserProgress(uid)).pipe(
+              switchMap(() => {
+                const statuses = new Map(progressMap);
+                units.forEach((unit, index) => {
+                  if (statuses.has(unit.id)) return;
+                  statuses.set(
+                    unit.id,
+                    unit.globalStatus === 'available'
+                      ? 'available'
+                      : progressMap.size === 0 && index === 0
+                        ? 'available'
+                        : 'locked',
+                  );
+                });
+                return of(this.mergeUnitsWithProgress(units, statuses));
+              }),
+            );
           }),
         );
       }),
@@ -428,6 +450,30 @@ export class DataService {
   getExercisesForUnit(unitId: string): Observable<ExerciseDoc[]> {
     return new Observable((observer) => {
       try {
+        let unitStatus: UnitProgressStatus | undefined;
+        let exercises: ExerciseDoc[] = [];
+        const emitVisibleExercises = () => {
+          const visible = exercises.filter(
+            (exercise) =>
+              exercise.status !== 'archived' &&
+              (exercise.status === 'published' ||
+                exercise.status == null ||
+                unitStatus === 'available'),
+          );
+          visible.sort((a, b) => a.order - b.order);
+          observer.next(visible);
+        };
+        const unitUnsubscribe = onSnapshot(
+          doc(this.firestore, 'units', unitId),
+          (unitSnapshot) => {
+            const data = unitSnapshot.exists()
+              ? (unitSnapshot.data() as Record<string, unknown>)
+              : {};
+            unitStatus = this.readUnitStatus(data['status']);
+            emitVisibleExercises();
+          },
+          (error) => observer.error(error),
+        );
         const exercisesCol = collection(
           this.firestore,
           'units',
@@ -447,12 +493,17 @@ export class DataService {
                 ),
               );
             });
-            list.sort((a, b) => a.order - b.order);
-            observer.next(list);
+            exercises = list;
+            emitVisibleExercises();
           },
           (error) => observer.error(error),
         );
-        return { unsubscribe };
+        return {
+          unsubscribe: () => {
+            unitUnsubscribe();
+            unsubscribe();
+          },
+        };
       } catch (err) {
         observer.error(err);
         return;
@@ -528,6 +579,10 @@ export class DataService {
     const examples = Array.isArray(examplesRaw)
       ? examplesRaw.filter((example): example is string => typeof example === 'string')
       : [];
+    const vocabularyIdsRaw = data['vocabularyIds'];
+    const vocabularyIds = Array.isArray(vocabularyIdsRaw)
+      ? vocabularyIdsRaw.filter((value): value is string => typeof value === 'string')
+      : undefined;
 
     return {
       id,
@@ -541,6 +596,7 @@ export class DataService {
       status,
       xpReward,
       examples,
+      vocabularyIds,
     };
   }
 

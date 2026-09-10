@@ -21,6 +21,15 @@
         <span class="status-text">{{ unit.status }}</span>
       </div>
       @if (unit.status === 'available') {
+        @if (unit.vocabularyIds?.length) {
+          <button
+            type="button"
+            class="action-btn action-btn--vocabulary"
+            [routerLink]="['/vocabulary', unit.id]"
+          >
+            Vocabulario
+          </button>
+        }
         <button
           type="button"
           class="action-btn action-btn--start"
@@ -30,6 +39,15 @@
         </button>
       }
       @if (unit.status === 'completed') {
+        @if (unit.vocabularyIds?.length) {
+          <button
+            type="button"
+            class="action-btn action-btn--vocabulary"
+            [routerLink]="['/vocabulary', unit.id]"
+          >
+            Vocabulario
+          </button>
+        }
         <button
           type="button"
           class="action-btn action-btn--repeat"

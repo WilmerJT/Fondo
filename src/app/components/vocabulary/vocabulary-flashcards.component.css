@@ -1,0 +1,20 @@
+:host { display: block; min-height: 100%; }
+.flashcards-page { width: min(680px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 48px; color: #172033; }
+.back-link, .lesson-link { color: #176b5d; font-weight: 700; text-decoration: none; }
+.flashcard { margin-top: 24px; padding: 24px; border: 1px solid #d7e3df; border-radius: 8px; background: #fffdf8; box-shadow: 0 12px 28px rgba(31, 67, 61, .1); text-align: center; }
+.image-frame { display: grid; place-items: center; min-height: 250px; border-radius: 6px; background: #eaf2ed; overflow: hidden; }
+.image-frame img { width: 100%; height: 250px; object-fit: contain; }
+.image-placeholder { color: #64746f; }
+.source-word { margin: 24px 0 12px; font-size: 2rem; font-weight: 800; }
+.audio-button, .reveal-button, .card-navigation button { border: 0; border-radius: 6px; padding: 11px 16px; font: inherit; font-weight: 700; cursor: pointer; }
+.audio-button { background: #e0efe9; color: #15594e; }
+.reveal-button { background: #e8b44f; color: #33250e; }
+.translation { margin: 20px 0 4px; color: #176b5d; font-size: 1.6rem; font-weight: 800; }
+.progress { margin: 18px 0; text-align: center; font-weight: 700; }
+.card-navigation { display: flex; justify-content: space-between; gap: 16px; }
+.card-navigation button { flex: 1; background: #176b5d; color: white; }
+.card-navigation button:disabled { cursor: not-allowed; opacity: .4; }
+.lesson-link { display: block; margin-top: 28px; text-align: center; }
+.state { padding: 48px 0; text-align: center; }
+.error { color: #a23636; }
+@media (max-width: 520px) { .flashcards-page { width: min(100% - 20px, 680px); padding-top: 20px; } .flashcard { padding: 16px; } .image-frame, .image-frame img { min-height: 190px; height: 190px; } .source-word { font-size: 1.6rem; } }

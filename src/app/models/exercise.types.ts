@@ -32,4 +32,5 @@ export interface ExerciseDoc {
   matchPairs?: MatchPair[];
   /** Para `listen_and_write`: URL del audio (opcional). */
   audioUrl?: string;
+  vocabularyId?: string;
 }

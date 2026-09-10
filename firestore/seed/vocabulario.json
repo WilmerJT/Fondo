@@ -10,5 +10,13 @@
   { "id": "object_book", "category": "objects", "sourceText": "book", "targetText": "libro", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
   { "id": "object_chair", "category": "objects", "sourceText": "chair", "targetText": "silla", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
   { "id": "object_table", "category": "objects", "sourceText": "table", "targetText": "mesa", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
-  { "id": "object_door", "category": "objects", "sourceText": "door", "targetText": "puerta", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" }
+  { "id": "object_door", "category": "objects", "sourceText": "door", "targetText": "puerta", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "verb_eat", "category": "verbs", "sourceText": "eat", "targetText": "comer", "partOfSpeech": "verb", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "verb_drink", "category": "verbs", "sourceText": "drink", "targetText": "beber", "partOfSpeech": "verb", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "verb_buy", "category": "verbs", "sourceText": "buy", "targetText": "comprar", "partOfSpeech": "verb", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "verb_go", "category": "verbs", "sourceText": "go", "targetText": "ir", "partOfSpeech": "verb", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "restaurant_menu", "category": "restaurants", "sourceText": "menu", "targetText": "menú", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "restaurant_table", "category": "restaurants", "sourceText": "table", "targetText": "mesa", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "restaurant_waiter", "category": "restaurants", "sourceText": "waiter", "targetText": "mesero", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" },
+  { "id": "restaurant_bill", "category": "restaurants", "sourceText": "bill", "targetText": "cuenta", "partOfSpeech": "noun", "imageUrl": "", "audioUrl": "", "status": "draft" }
 ]

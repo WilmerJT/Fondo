@@ -179,6 +179,11 @@
   box-shadow: 0 3px 0 #1899d6;
 }
 
+.action-btn--vocabulary {
+  background: #e8b44f;
+  color: #33250e;
+}
+
 .action-btn--start:hover {
   filter: brightness(1.06);
 }

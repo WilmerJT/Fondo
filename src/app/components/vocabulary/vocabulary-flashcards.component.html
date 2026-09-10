@@ -1,0 +1,41 @@
+<main class="flashcards-page">
+  <a class="back-link" [routerLink]="['/learning-path']">Volver al mapa</a>
+
+  @if (loading) {
+    <p class="state">Cargando vocabulario...</p>
+  } @else if (error) {
+    <p class="state error">{{ error }}</p>
+  } @else if (!words.length) {
+    <p class="state">No hay palabras publicadas en esta unidad.</p>
+  } @else {
+    @if (currentWord; as word) {
+      <section class="flashcard" aria-live="polite">
+      <div class="image-frame">
+        @if (word.imageUrl) {
+          <img [src]="word.imageUrl" [alt]="word.sourceText" />
+        } @else {
+          <span class="image-placeholder" aria-label="Imagen no disponible">Imagen no disponible</span>
+        }
+      </div>
+      <p class="source-word">{{ word.sourceText }}</p>
+      @if (word.audioUrl) {
+        <button type="button" class="audio-button" [disabled]="isPlaying" (click)="playAudio()">
+          {{ isPlaying ? 'Reproduciendo...' : 'Escuchar' }}
+        </button>
+      }
+      @if (translationVisible) {
+        <p class="translation">{{ word.targetText }}</p>
+      } @else {
+        <button type="button" class="reveal-button" (click)="showTranslation()">Mostrar traducción</button>
+      }
+      </section>
+
+      <p class="progress">{{ progressLabel }}</p>
+      <nav class="card-navigation" aria-label="Navegación del vocabulario">
+        <button type="button" [disabled]="currentIndex === 0" (click)="previous()">Anterior</button>
+        <button type="button" [disabled]="currentIndex === words.length - 1" (click)="next()">Siguiente</button>
+      </nav>
+      <a class="lesson-link" [routerLink]="['/lesson', unitId]">Comenzar ejercicios</a>
+    }
+  }
+</main>

@@ -101,5 +101,7 @@ export function normalizeExerciseFromFirestore(
     choices: coerceStringArray(data['choices']),
     matchPairs: coerceMatchPairs(data['matchPairs']),
     audioUrl: data['audioUrl'] != null ? String(data['audioUrl']) : undefined,
+    vocabularyId:
+      data['vocabularyId'] != null ? String(data['vocabularyId']) : undefined,
   };
 }

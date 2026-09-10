@@ -69,6 +69,8 @@ function buildUnits(vocabulary) {
     months: { title: 'Months of the year', description: 'Learn the months of the year.', icon: '📅', order: 1 },
     attributes: { title: 'Attributes', description: 'Describe people, objects and places.', icon: '🎨', order: 2 },
     objects: { title: 'Everyday objects', description: 'Name objects from daily life.', icon: '🎒', order: 3 },
+    verbs: { title: 'Basic verbs', description: 'Practice common actions.', icon: '🏃', order: 4 },
+    restaurants: { title: 'At the restaurant', description: 'Learn useful restaurant vocabulary.', icon: '🍽️', order: 5 },
   };
 
   return Object.entries(categoryConfig).flatMap(([category, config]) => {
@@ -77,6 +79,7 @@ function buildUnits(vocabulary) {
     const choices = words.map((word) => word.targetText);
     const exercises = words.map((word, index) => ({
       id: `translate_${word.id}`,
+      vocabularyId: word.id,
       type: 'multiple_choice',
       question: `Translate "${word.sourceText}"`,
       correctAnswer: word.targetText,
@@ -108,6 +111,8 @@ function buildUnits(vocabulary) {
       icon: config.icon,
       order: config.order,
       level: 'Principiante A1',
+      status: 'available',
+      vocabularyIds: words.map((word) => word.id),
       exercises,
     }];
   });

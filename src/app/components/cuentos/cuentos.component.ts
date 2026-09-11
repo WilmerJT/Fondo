@@ -21,6 +21,9 @@ export class CuentosComponent implements OnInit {
   }
 
   statusLabel(status: CuentoDoc['status']): string {
-    return status === 'available' ? 'Leer' : 'Próximamente';
+    if (status === 'published' || status === 'available') {
+      return 'Leer';
+    }
+    return 'Próximamente';
   }
 }

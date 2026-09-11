@@ -101,7 +101,55 @@
    box-shadow: none;
    cursor: not-allowed;
  }
+.lesson-feedback {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: min(100%, 540px);
+  margin: 0 auto 20px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid transparent;
+}
 
+.lesson-feedback--success {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #166534;
+}
+
+.lesson-feedback--error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}
+
+.lesson-feedback__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+.lesson-feedback__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lesson-feedback__content strong {
+  font-size: 1rem;
+}
+
+.lesson-feedback__content span,
+.lesson-feedback__content small {
+  font-size: 0.9rem;
+}
 .lesson-status {
   text-align: center;
   padding: 24px;

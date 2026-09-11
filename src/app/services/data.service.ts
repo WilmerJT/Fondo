@@ -613,7 +613,34 @@ export class DataService {
           : Number(minutesVal) || 0;
     const statusRaw = data['status'];
     const status: CuentoStatus =
-      statusRaw === 'available' ? 'available' : 'coming_soon';
+      statusRaw === 'available' || statusRaw === 'published'
+        ? (statusRaw === 'published' ? 'published' : 'available')
+        : 'coming_soon';
+
+    const rawPages = data['pages'];
+    const pages = Array.isArray(rawPages)
+      ? rawPages
+          .filter((page): page is Record<string, unknown> => !!page && typeof page === 'object')
+          .map((page, index) => ({
+            id: typeof page['id'] === 'string' ? page['id'] : `page_${index + 1}`,
+            order: typeof page['order'] === 'number' ? page['order'] : index + 1,
+            imageUrl:
+              typeof page['imageUrl'] === 'string' ? page['imageUrl'] : null,
+            imageStoragePath:
+              typeof page['imageStoragePath'] === 'string'
+                ? page['imageStoragePath']
+                : null,
+            kamentsaText:
+              typeof page['kamentsaText'] === 'string'
+                ? page['kamentsaText']
+                : '',
+            spanishText:
+              typeof page['spanishText'] === 'string'
+                ? page['spanishText']
+                : '',
+          }))
+          .sort((a, b) => a.order - b.order)
+      : [];
 
     return {
       id,
@@ -621,11 +648,18 @@ export class DataService {
       description:
         typeof data['description'] === 'string' ? data['description'] : '',
       icon: typeof data['icon'] === 'string' ? data['icon'] : '📖',
+      coverImageUrl:
+        typeof data['coverImageUrl'] === 'string' ? data['coverImageUrl'] : null,
+      coverImageStoragePath:
+        typeof data['coverImageStoragePath'] === 'string'
+          ? data['coverImageStoragePath']
+          : null,
       order,
       level: typeof data['level'] === 'string' ? data['level'] : '',
       status,
       content: typeof data['content'] === 'string' ? data['content'] : undefined,
       readingTimeMinutes,
+      pages: pages.length > 0 ? pages : undefined,
     };
   }
 }

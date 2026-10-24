@@ -1,43 +1,46 @@
-<!-- Usamos 'as stats' para crear un objeto único, NO una lista -->
 <div class="dashboard" *ngIf="stats$ | async as stats; else loading">
   <header class="header">
-  <div class="user-info">
-    <h1>¡Hola, {{ stats.username }}! 👋</h1>
-    <!-- Añadimos una clase dinámica según el nivel -->
-    <p class="level-badge" [ngClass]="stats.level.split(' ')[0].toLowerCase()">
-      {{ stats.level }}
-    </p>
-  </div>
-  <div class="streak-badge" title="Días seguidos completando al menos una lección">
-    🔥 {{ stats.streak ?? 0 }} día{{ (stats.streak ?? 0) === 1 ? '' : 's' }}
-  </div>
-  </header>
-  <div class="progress-card">
-    <h3>Nivel: {{ stats.level }}</h3>
-    <p>XP Acumulada: {{ stats.xp }}</p>
-    <p class="streak-line">Racha diaria: {{ stats.streak ?? 0 }} 🔥</p>
-    <a class="btn-primary" routerLink="/learning-path">Ir al Mapa</a>
-  </div>
+    <div class="user-info">
+      <h1>¡Hola, {{ stats.username }}! 👋</h1>
+      <p class="level-badge" [ngClass]="stats.level.split(' ')[0].toLowerCase()">
+        {{ stats.level }}
+      </p>
+    </div>
 
-  <div class="feature-cards">
-    <div class="feature-card feature-card--games">
-      <span class="feature-icon">🎮</span>
-      <h3>Juegos</h3>
-      <p>Practica con minijuegos divertidos</p>
-      <a class="btn-primary btn-primary--games" routerLink="/juegos">
-        Explorar Juegos
-      </a>
+    <div class="streak-badge" title="Días seguidos completando al menos una lección">
+      🔥 {{ stats.streak ?? 0 }} día{{ (stats.streak ?? 0) === 1 ? '' : 's' }}
     </div>
-    <div class="feature-card feature-card--stories">
-      <span class="feature-icon">📖</span>
-      <h3>Cuentos</h3>
-      <p>Lee historias en otros idiomas</p>
-      <a class="btn-primary btn-primary--stories" routerLink="/cuentos">
-        Leer Cuentos
-      </a>
-    </div>
-  </div>
+  </header>
+
+  <section class="progress-card" aria-label="Resumen de progreso">
+    <p class="eyebrow">Continúa aprendiendo</p>
+    <h2>Nivel: {{ stats.level }}</h2>
+    <p>XP acumulada: {{ stats.xp }}</p>
+    <p class="streak-line">Racha diaria: {{ stats.streak ?? 0 }} 🔥</p>
+    <a class="btn-primary" routerLink="/learning-path">Ir al mapa</a>
+  </section>
+
+  <nav class="feature-cards" aria-label="Acciones principales">
+    <a class="feature-card feature-card--map" routerLink="/learning-path">
+      <span class="feature-icon" aria-hidden="true">🗺️</span>
+      <h3>Ir al mapa</h3>
+      <p>Revisa tu progreso y continúa cada unidad.</p>
+    </a>
+
+    <a class="feature-card feature-card--games" routerLink="/juegos">
+      <span class="feature-icon" aria-hidden="true">🎮</span>
+      <h3>Explorar juegos</h3>
+      <p>Practica con minijuegos divertidos.</p>
+    </a>
+
+    <a class="feature-card feature-card--stories" routerLink="/cuentos">
+      <span class="feature-icon" aria-hidden="true">📖</span>
+      <h3>Leer cuentos</h3>
+      <p>Descubre historias y mejora tu comprensión.</p>
+    </a>
+  </nav>
 </div>
+
 <ng-template #loading>
   <app-loading-spinner></app-loading-spinner>
 </ng-template>

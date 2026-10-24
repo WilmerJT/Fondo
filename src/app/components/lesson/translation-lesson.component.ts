@@ -26,6 +26,7 @@ export class TranslationLessonComponent implements OnInit {
   @Input() exercise: ExerciseDoc | null = null;
   @Input() exerciseIndex = 0;
   @Input() totalExercises = 0;
+  @Input() isChecking = false;
 
   @Output() answerSubmitted = new EventEmitter<ExerciseResult>();
 
@@ -67,7 +68,7 @@ export class TranslationLessonComponent implements OnInit {
   }
 
   canSubmit(): boolean {
-    return this.textAnswer.trim().length > 0;
+    return !this.isChecking && this.textAnswer.trim().length > 0;
   }
 
   playAudio() {
@@ -87,6 +88,8 @@ export class TranslationLessonComponent implements OnInit {
   }
 
   checkAnswer() {
+    if (this.isChecking) return;
+
     const ex = this.exercise;
     if (!ex) return;
 

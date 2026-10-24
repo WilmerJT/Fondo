@@ -28,6 +28,7 @@ export class VocabularyLessonComponent implements OnInit, OnChanges {
   @Input() exercise: ExerciseDoc | null = null;
   @Input() exerciseIndex = 0;
   @Input() totalExercises = 0;
+  @Input() isChecking = false;
 
   @Output() answerSubmitted = new EventEmitter<ExerciseResult>();
 
@@ -140,6 +141,8 @@ export class VocabularyLessonComponent implements OnInit, OnChanges {
   }
 
   canSubmit(): boolean {
+    if (this.isChecking) return false;
+
     const ex = this.exercise;
     if (!ex) return false;
 
@@ -158,6 +161,8 @@ export class VocabularyLessonComponent implements OnInit, OnChanges {
   }
 
   checkAnswer() {
+    if (this.isChecking) return;
+
     const ex = this.exercise;
     if (!ex) return;
 

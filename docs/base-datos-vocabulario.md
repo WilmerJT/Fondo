@@ -1,6 +1,8 @@
 # Base de datos de vocabulario en Firebase
 
-Firebase es la única fuente de datos de la aplicación. El contenido editable se mantiene en `firestore/seed/vocabulario.json` y el script lo publica en Firestore.
+Firebase es la única fuente de datos de la aplicación. El contenido definitivo Kamëntsá → Español se mantiene en `firestore/seed/vocabulario.json` y el script lo publica en Firestore.
+
+El catálogo definitivo contiene 190 palabras, 19 categorías, 19 unidades gestionadas por el seed y 209 ejercicios (`190 multiple_choice + 19 match_words`).
 
 ## Arquitectura
 
@@ -92,7 +94,7 @@ Una unidad se guarda en `units/{unitId}` y mantiene referencias, no copias de pa
 
 Una palabra puede pertenecer a varias unidades sin duplicar `vocabulary/{wordId}`. El orden de `vocabularyIds` es el orden usado por las flashcards.
 
-El seed actual crea automáticamente estas unidades cuando hay palabras en las categorías correspondientes:
+El seed actual crea automáticamente estas 19 unidades cuando hay palabras en las categorías correspondientes:
 
 ```text
 unit_months
@@ -103,6 +105,8 @@ unit_restaurants
 ```
 
 Todas las unidades generadas por el seed llevan `status: "available"`.
+
+Si Firestore contiene unidades manuales anteriores con IDs que no empiezan por `unit_` y no pertenecen a estas categorías, se conservan para no borrar contenido no gestionado por el seed. Por eso el total visible en Firestore puede ser mayor que 19, aunque el catálogo definitivo gestionado por este script siempre sea de 19 unidades.
 
 ## Ejercicios
 
@@ -127,7 +131,7 @@ Ejemplo generado:
   "difficulty": "A1",
   "languageFrom": "en",
   "languageTo": "target",
-  "status": "draft"
+  "status": "published"
 }
 ```
 
@@ -424,7 +428,7 @@ juegos.json → juegos
 cuentos.json → cuentos
 ```
 
-Usa batches de 450 operaciones y `merge: true`.
+Usa batches de 450 operaciones y `merge: true`. Antes de cargar, retira únicamente las unidades y palabras generadas por el catálogo de prueba anterior (`unit_months`, `unit_attributes`, `unit_objects`, `unit_verbs`, `unit_restaurants` y sus prefijos de palabras legacy). No elimina unidades manuales ni contenido fuera de ese conjunto.
 
 ### Límites importantes del seed
 

@@ -1,35 +1,170 @@
 [
   {
-    "id": "story_gato_curioso",
-    "title": "El gato curioso",
-    "description": "Una aventura sencilla para principiantes con vocabulario del día a día.",
-    "icon": "🐱",
+    "id": "cuento_ofrenda_difuntos",
+    "title": "Cuento de la conmemoración de los difuntos",
+    "description": "Historia tradicional sobre la ofrenda a los difuntos en la memoria de los antepasados.",
+    "icon": "🕯️",
+    "coverImageUrl": "",
+    "coverImageStoragePath": "cuentos/cuento_ofrenda_difuntos/cover.webp",
     "order": 1,
-    "level": "Principiante A1",
-    "status": "coming_soon",
-    "readingTimeMinutes": 3,
-    "content": "Había una vez un gato muy curioso. Cada mañana salía al jardín y miraba las flores. Un día vio un pájaro azul en el árbol. El gato no quiso atraparlo; solo quiso saludarlo. «Hola, pájaro», dijo el gato. El pájaro cantó y voló lejos. El gato volvió a casa feliz."
+    "level": "A1",
+    "status": "published",
+    "readingTimeMinutes": 8,
+    "pages": [
+      {
+        "id": "page_1",
+        "order": 1,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_ofrenda_difuntos/page-01.webp",
+        "kamentsaText": "Uacjnaytescam be parlo Cuento de la ofrenda\n\nAnteona bëtsetsajemëng chca imnabtsebojatša chë costumbr uabainán uacinay; chcatescam pamillajemëng jontšan joboprontan ntšamo mamatem bëngbe betsá tojarremediacá sanateměng: bocoy uamešnén, jangněntsna, běbia, miyá, uantšebjo: cotšbian, tuambian, tsějanbian o ntšamo chë obanejemëng mojanayatmëcá.",
+        "spanishText": "Desde tiempos inmemoriales nuestros antepasados acostumbraban celebrar la fiesta de la ofrenda en memoria de los muertos. Para tal ocasión la gente preparaba alimentos que la madre tierra y la naturaleza proveía: chicha, mote, envueltos, achira, panes, banano, queso, ñame y carnes de: cerdo, cuy, gallina y otros alimentos preferidos en vida por los familiares muertos."
+      },
+      {
+        "id": "page_2",
+        "order": 2,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_ofrenda_difuntos/page-02.webp",
+        "kamentsaText": "Tempo canyë bobonts uabainá andres inoyen tjoy; chan tondayan ntsentšamnan uacjnaytescam, ni chabe bëtsëjembiam ndaytem juatšëmbonam, jetatán tmojanobja chë bacó inye pamillangbioc; chengna aine imojanaman obanëngbiam juatšembonam, che uatšembon bocoyec tmojanotmenang; tsë ntseto ibet yojtsemna or che bacó tojtanontšé yebnoy jtan; chan tsëntsabenachiñ yojtsomaná chorna yojtsotjenay inýe luaroc, chocna yojtse nýay bětscá entšang imojtsachnějuán sanatem ëng uasmanëng, enbiajuayëng; imojtsayoboyejuay ntšamo šěnjanabé, plautë bja yojtsaiuenancá.",
+        "spanishText": "En épocas pasadas vivía un joven llamado Andrés, a él no le importaba nada acerca de la fiesta de la ofrenda en memoria de los difuntos, ni siquiera se acordaba de hacer la ofrenda en memoria de su padre, al anochecer se fue a donde unos familiares, pues ellos lo habían invitado. En esta casa si tenían la costumbre de hacer la ofrenda, con la chicha de la ofrenda que habían tomado, todos se emborracharon."
+      },
+      {
+        "id": "page_3",
+        "order": 3,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_ofrenda_difuntos/page-03.webp",
+        "kamentsaText": "Nýetscang tmojanachne ngo or, ostonoc canýe bacojem šachenac enajerm yojtsatëseton.\n\nChë otjenayabe chëjan yojtsachnëjuan or, chë bacojem yojtsayenoyebayán: \"atšbe šešon ndayec tonday šonjuatšembon; chiyec mor ngmenac y shentsec sentsatá ca\".\n\nTojtanobšená or, corente yojtsaftén; lempe fchecuaná yebnoy tojtaná, chca tojanotjenatescán chë bacó botamán tojtanenojuabó; chabe taitabiam pront uacjnayté juatšembonán.",
+        "spanishText": "A eso de la media noche, tomó el camino de regreso a casa y vencido por el sueño se quedó dormido, entonces soñó y en el sueño era transportado hacia otro lugar. Allá observaba un gran desfile de gente que pasaba cargando cantidades de alimentos, todos muy contentos. Cantaban y bailaban al son de la flauta el bombo.\n\nY al final del desfile iba un ancianito muy triste; no llevaba nada, al pasar por el sitio del soñador, el anciano iba diciendo: \"¿por qué mi hijo no me ha ofrendado nada? Es por eso que voy de regreso triste y con hambre\".\n\nAl despertar llovía muchísimo y a casa llego totalmente mojado."
+      },
+      {
+        "id": "page_4",
+        "order": 4,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_ofrenda_difuntos/page-04.webp",
+        "kamentsaText": "Después de aquel sueño el hombre reflexionó y cambio de actitud y cada vez que llegaba el día señalado hacia la respectiva ofrenda para su difunto padre.",
+        "spanishText": "Después de aquel sueño el hombre reflexionó y cambio de actitud y cada vez que llegaba el día señalado hacia la respectiva ofrenda para su difunto padre."
+      }
+    ]
   },
   {
-    "id": "story_casa_azul",
-    "title": "La casa azul",
-    "description": "Historia intermedia sobre una familia y su nuevo hogar en la ciudad.",
-    "icon": "🏠",
+    "id": "cuento_del_sol",
+    "title": "Cuento del sol",
+    "description": "Historia tradicional relacionada con la protección del sol y la invocación a la energía del universo.",
+    "icon": "☀️",
+    "coverImageUrl": "",
+    "coverImageStoragePath": "cuentos/cuento_del_sol/cover.webp",
     "order": 2,
-    "level": "Estudiante A2",
-    "status": "coming_soon",
-    "readingTimeMinutes": 5,
-    "content": "La familia Ruiz se mudó a una casa azul cerca del parque. Los niños exploraron cada habitación mientras los padres organizaban las cajas. Por la tarde prepararon té y miraron la ciudad desde la ventana. «Aquí empezará nuestra nueva vida», dijo la madre. Todos sonrieron."
+    "level": "A1",
+    "status": "published",
+    "readingTimeMinutes": 7,
+    "pages": [
+      {
+        "id": "page_1",
+        "order": 1,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_del_sol/page-01.webp",
+        "kamentsaText": "Shinýbe parlo\n\nCorente tojtsejënÿa nÿetstó ora, shja ts ëntsaca canta niñufja shconanán jashacuayán utáta utsjabanufjënga. Chentše juachabojétjana uabtsenguiáca.",
+        "spanishText": "Cuando hacía mucho sol al mediodía, era tradición clavar cuatro palitos de cuarenta centímetros de largo cada uno en el centro del patio, en forma circular cercándolos con una falda autóctona.\n\nEn medio del círculo se colocaba un cabo de cirio sobre una mota de algodón aplicado en la huella de los pasos de un hechicero."
+      },
+      {
+        "id": "page_2",
+        "order": 2,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_del_sol/page-02.webp",
+        "kamentsaText": "Tsëntsacna castella cerufjua juaseorána mechenufjuá. Bojajna jujtšeise juañeñan, ase bengbe Taitá (shinÿe), jontsán jutšëmbonán:",
+        "spanishText": "En seguida se encendía la vela para implorar protección al \"padre sol\"."
+      },
+      {
+        "id": "page_3",
+        "order": 3,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_del_sol/page-03.webp",
+        "kamentsaText": "\"celoca Taitá bojtsabuachenyán, lempe bojtsënýá y nýetscang yentšanga y ný ets luar bojtsabuabinÿná.\n\nCbotseempadá ntšamo nÿets luar cuactsebinÿnacá, mal juabnafja catë tsecastigá y nÿa ušcatětsebojuená. Chabe causa šocana tsjeisebómna iný ana, inýana jatěshachana njisetëcjá. Ndoñe cuasënduamána inýana jarrezana ntšamo tjëbtsuencá, pero Taitá chcá šmopacentsiá y šmoyeuná atšbe ofrecido\".",
+        "spanishText": "\"Oh Dios del cielo, ser supremo y conservador del universo que nos defiendes contra todo daño o peligro nos percibes y alumbras a toda la tierra y a todos sus habitantes.\n\nTe ruego oh Dios del cielo que ojalá castigues y apartes de mi a la persona que me hace maleficios infligiéndome toda clase de enfermedades sin recobrar la salud.\n\nNo sé rezar otras oraciones tal como he escuchado a los mayores, sin embargo, presta atención a mis demandas de auxilio y disculpa mi atrevimiento.\""
+      }
+    ]
   },
   {
-    "id": "story_noche_parque",
-    "title": "Noche en el parque",
-    "description": "Relato con más detalle narrativo para practicar tiempos verbales.",
-    "icon": "🌙",
+    "id": "cuento_del_agua",
+    "title": "Cuento del agua",
+    "description": "Relato sobre el valor del agua, la colaboración y la regeneración de la tierra.",
+    "icon": "💧",
+    "coverImageUrl": "",
+    "coverImageStoragePath": "cuentos/cuento_del_agua/cover.webp",
     "order": 3,
-    "level": "Intermedio B1",
-    "status": "coming_soon",
-    "readingTimeMinutes": 7,
-    "content": "Cuando el sol se ocultó, el parque quedó en silencio. Ana había caminado durante horas y decidió sentarse en un banco. Recordaba las conversaciones del día y escribía ideas en su cuaderno. De pronto escuchó pasos suaves; era un perro perdido que buscaba compañía. Ana lo acompañó hasta la entrada y llamó al número del collar. A medianoche, el dueño llegó agradecido."
+    "level": "A1",
+    "status": "published",
+    "readingTimeMinutes": 8,
+    "pages": [
+      {
+        "id": "page_1",
+        "order": 1,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_del_agua/page-01.webp",
+        "kamentsaText": "Bejay tojanochnaor be parlo\n\nTemp betiyeshënga y bayëng tsabá imojaniyena Ndegolpna mallajta yojtsojenýaná; chorna betiyeshenga y bayenga imojontša jtsobanana, imojotsbocá betiyeshênga y bayënga imojenébjna botamán jtenoyeunayama.",
+        "spanishText": "Los árboles y las plantas vivían bien. De repente hizo bastante sol, desde ese momento los árboles y las plantas empezaron a morir, después algunos árboles y animales se escaparon y se reunieron para dialogar sobre lo sucedido."
+      },
+      {
+        "id": "page_2",
+        "order": 2,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_del_agua/page-02.webp",
+        "kamentsaText": "Chorna jabuach calpentero shloftše yojayan: -Atše senduabatma can ye pamill bejaye uabomná, nderado buatetsë buatšataye y chca nanjopodia catšatengbioye jtayenana ca. Chorma queše yojátayana: -cuajna Janjuanguama y chca nderado ndon mas muanjóbana ca.\n\nChca imojëbtsenóyeunaye, imojanga bena benach Chca imnaye y chorna yojaubinýna botamán betiyecuema y choycan betaman bejayéjatema yojtsobocana ca.",
+        "spanishText": "Después el pájaro carpintero dijo:\n\n-yo conozco a un familiar que tiene agua, de pronto nos puede regalar para nuestros hermanos.\n\nDespués el perro habló:\n\n-vamos a buscar de pronto así ya no nos vayamos a morir."
+      },
+      {
+        "id": "page_3",
+        "order": 3,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_del_agua/page-03.webp",
+        "kamentsaText": "Chca imojëbtsenóyeunaye, imojanga bena benach Chca imnaye y chorna yojaubinýna botamán betiyecuema y choycan betaman bejayéjatema yojtsobocana ca. Chentšan chiye juafjajonaycá yojóben y chentše ftšeše inetsóchbañe. Chca bomin ye imojtsequēcnaye ora, che fisese yoátejaye -iAua! Ndayeca muenache bepadecénenga ca. Chë bayenga y che bayenga y che betiyeshënga imojojua: -iTša sontsejuendandan! Tabstjobenayë nga acbe bejayëjatema jobšiyana ca.",
+        "spanishText": "Así conversaron y se fueron de viaje largo. Iban caminando y luego miraron un árbol grande, bonito y del salía agua bonita. De repente miraron una cocha y en ella nadaba una tortuga.\n\nAsí lo estaban mirando cuando la tortuga dijo:\n\n-¡qué pasó! Porque están aquí.\n\nLos animales, animales y árboles dijeron:\n\n-¡qué sed! Podemos tomar el agua de usted."
+      },
+      {
+        "id": "page_4",
+        "order": 4,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_del_agua/page-04.webp",
+        "kamentsaText": "Chorna chë ftšeše yojayana: -šmojtseboše bëtscá béjaye jobšiyánase, mochanjénajabuache quem be ts betiyeshe jenatajchcama ca. Chca imojuena ora, betsco nýetscanga imojontša jenajabuachana, che calpentero shloftše, loroše y nýetscanga imojontša jenájotana ché betiyeshe jenatajchcama.\n\nImojenatajchca chë betiyeshe ora, yojontša juaftena: básefta buacuásha yojuaquéda celócnoye y chë shangaca yojóbema botamán jantšeta; nye buacuashengaca yojóbema bětscá bejayënga y chë bets niñese yojtsóbema bets uafjajonaye y chiyna tsbatsana mamabe juatsboca yojuabjajua chca yojopásayeca mo fisochuá cuentinca imojisejiá ba betiyeshenga. Chentšana chca tsbatsana mama bë taman bejayënga canetserremedia ca.",
+        "spanishText": "Enseguida la tortuga dijo:\n\n-si ustedes quieren tomar bastante agua ayúdense a tumbar el árbol grande.\n\nCuando escucharon lo que dijo entre todos se ayudaron, el pájaro carpintero, el loro y los demás animales se ayudaron a derrumbar el árbol.\n\nA penas voltearon el árbol empezó a llover luego un poco de ramas quedo mirando para el cielo y luego se llenó de neblina; de las parcas brotó más agua y del tronco surgió el mar, viendo ese milagro dejaron sembrando árboles y de ahí la madre tierra se mantiene con bonita agua."
+      }
+    ]
+  },
+  {
+    "id": "cuento_lenguaje_ceremonial_perdon",
+    "title": "Ejemplo del lenguaje ceremonial utilizado en el rito del perdón",
+    "description": "Texto ceremonial con un mensaje de respeto, perdón y bendición dentro de la tradición.",
+    "icon": "🙏",
+    "coverImageUrl": "",
+    "coverImageStoragePath": "cuentos/cuento_lenguaje_ceremonial_perdon/cover.webp",
+    "order": 4,
+    "level": "A2",
+    "status": "published",
+    "readingTimeMinutes": 6,
+    "pages": [
+      {
+        "id": "page_1",
+        "order": 1,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_lenguaje_ceremonial_perdon/page-01.webp",
+        "kamentsaText": "Clestrinýte lamentacionentše cortes palabra jenlasteman\n\nTaitá mandadbe bariy ntšam dios caridado cmojaisobemañ cá, mentša nÿe cuentad palabra tsošbuachenaň quem uaman té, botaman cortisioc cuentad palabra šmolastema.",
+        "spanishText": "Taita con todo el respeto que usted se merece, hoy en nuestro gran día me brinde unas palabras que me servirán como ejemplo para mi vida.\n\nYo no tengo derecho de expresarle estas palabras pero aceptando su petición con el pensamiento que dios me ha dado me disculpa estas pocas palabras."
+      },
+      {
+        "id": "page_2",
+        "order": 2,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_lenguaje_ceremonial_perdon/page-02.webp",
+        "kamentsaText": "Atsbe bariy meresido taitsatobuajon mentša taitabe bariy muentše cortisio jatobomnan, chca boluntado cuašjatobemañ nday palabra mentša respeto tsenperdenan.\n\nNdocarimidio botaman cortisioc jeftsashecuastonan vida y gracianscuan chca mochtsatenošbuachiy, ndayentš basti o buajtan vida y gracia betsobomnantscuan nday trabajo nadayiñe chca botaman mochtsatenašbuachiy bëndatbe bariy y atšbe bariy.",
+        "spanishText": "Mientras el gran creador nos preste la vida con gran respeto en cualquier lugar o cualquier actividad que estemos haciendo nos debemos saludar y en lo posible colaborarnos de alguna manera como hermanos, manteniendo siempre el respeto mutuo.\n\nHoy amaneció nuestro gran día, nuestra fiesta tradicional debes festejar con alegría y respeto y si el todo poderoso nos presta la vida nos hemos de encontrar el próximo año y si no hoy es el último día que nos vemos."
+      },
+      {
+        "id": "page_3",
+        "order": 3,
+        "imageUrl": "",
+        "imageStoragePath": "cuentos/cuento_lenguaje_ceremonial_perdon/page-03.webp",
+        "kamentsaText": "Y mënten oboyejuayte cutěnjabinýna dios manda cortisioc cochjë ftsoboyejuay y tonday delicadoc inýe nyan mochjatachebiashjo y ndoñesn nye mor nýe tša.\n\nAtšbe bariy nýe nýetša repeto cuatijaytsenoperde Ndocarimidio atšbe bariy polvo y fshants jaitsoqueda cucuatšec mentša respeto chejenoperdia.",
+        "spanishText": "En primer lugar que el todo poderoso me perdone y después usted me sepa disculpar por estas pocas palabras.\n\nCon la mano que el día en que me muera se convertirá en polvo le voy a dar la bendición.\n\n\"En el nombre del padre, del hijo y del espíritu santo, amen\"."
+      }
+    ]
   }
 ]

@@ -42,6 +42,21 @@
           >
         </nav>
 
+        @if (feedback) {
+          <div class="lesson-feedback lesson-feedback--{{ feedback.type }}">
+            <div class="lesson-feedback__icon">
+              {{ feedback.type === 'success' ? '✓' : '✕' }}
+            </div>
+            <div class="lesson-feedback__content">
+              <strong>{{ feedback.type === 'success' ? '¡Muy bien!' : 'No es correcto' }}</strong>
+              <span>{{ feedback.type === 'success' ? 'Respuesta correcta' : feedback.message }}</span>
+              @if (feedback.type === 'success' && feedback.xpEarned) {
+                <small>+{{ feedback.xpEarned }} XP</small>
+              }
+            </div>
+          </div>
+        }
+
         <!-- Componente especializado por tipo de lección -->
         @switch (lessonType) {
           @case ('vocabulary') {
@@ -49,6 +64,7 @@
               [exercise]="ex"
               [exerciseIndex]="currentIndex"
               [totalExercises]="exercises.length"
+              [isChecking]="isChecking"
               (answerSubmitted)="onExerciseSubmitted($event)"
             />
           }
@@ -57,6 +73,7 @@
               [exercise]="ex"
               [exerciseIndex]="currentIndex"
               [totalExercises]="exercises.length"
+              [isChecking]="isChecking"
               (answerSubmitted)="onExerciseSubmitted($event)"
             />
           }

@@ -14,9 +14,30 @@ import { LoadingSpinnerComponent } from '../shared/loading-spinner.component';
 })
 export class LearningPathComponent implements OnInit {
   units$: Observable<any[]> | undefined;
+  openUnitId: string | null = null;
   private dataService = inject(DataService);
+
   ngOnInit() {
-    // Llamamos al nuevo método de Firebase
     this.units$ = this.dataService.getUnitsFromFirebase();
+  }
+
+  toggleUnit(unitId: string): void {
+    this.openUnitId = this.openUnitId === unitId ? null : unitId;
+  }
+
+  isUnitOpen(unitId: string): boolean {
+    return this.openUnitId === unitId;
+  }
+
+  statusLabel(status: string): string {
+    switch (status) {
+      case 'completed':
+        return 'Completado';
+      case 'available':
+        return 'Disponible';
+      case 'locked':
+      default:
+        return 'Bloqueado';
+    }
   }
 }

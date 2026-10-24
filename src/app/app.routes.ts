@@ -13,6 +13,7 @@ import { CrosswordPageComponent } from './components/juegos/crossword-page.compo
 import { WordSearchPageComponent } from './components/juegos/word-search-page.component';
 import { GardenPageComponent } from './components/juegos/garden-page.component';
 import { CuentosComponent } from './components/cuentos/cuentos.component';
+import { CuentoReaderComponent } from './components/cuentos/cuento-reader.component';
 import { VocabularyFlashcardsComponent } from './components/vocabulary/vocabulary-flashcards.component';
 import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
@@ -83,6 +84,11 @@ export const routes: Routes = [
   {
     path: 'cuentos',
     component: CuentosComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'cuentos/:id',
+    component: CuentoReaderComponent,
     canActivate: [authGuard],
   },
 ];

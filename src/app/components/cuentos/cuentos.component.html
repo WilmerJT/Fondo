@@ -28,12 +28,22 @@
               <span class="story-time">{{ cuento.readingTimeMinutes }} min</span>
             }
           </div>
-          <span
-            class="story-badge"
-            [class.story-badge--available]="cuento.status === 'available'"
-          >
-            {{ statusLabel(cuento.status) }}
-          </span>
+          <div class="story-actions">
+            <span
+              class="story-badge"
+              [class.story-badge--available]="cuento.status === 'available' || cuento.status === 'published'"
+            >
+              {{ statusLabel(cuento.status) }}
+            </span>
+            <button
+              type="button"
+              class="story-button"
+              [routerLink]="['/cuentos', cuento.id]"
+              [disabled]="cuento.status === 'coming_soon'"
+            >
+              Leer cuento
+            </button>
+          </div>
         </article>
       }
     }

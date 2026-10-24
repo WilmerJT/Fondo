@@ -48,6 +48,8 @@ export class LessonComponent implements OnInit, OnDestroy {
   completionStreak: number | null = null;
   nextUnitUnlocked = false;
   nextUnitTitle: string | null = null;
+  isChecking = false;
+  feedback: { type: 'success' | 'error'; message: string; xpEarned?: number } | null = null;
 
   private exercisesSub?: Subscription;
   private exercisesLoadedOnce = false;
@@ -133,15 +135,30 @@ export class LessonComponent implements OnInit, OnDestroy {
   }
 
   async onExerciseSubmitted(result: VocabResult | TransResult) {
-    if (!result.correct) {
-      alert('Inténtalo de nuevo.');
+    if (this.isChecking) {
       return;
     }
 
-    const xp = result.xpEarned;
-    const isLast = this.currentIndex >= this.exercises.length - 1;
+    this.isChecking = true;
+    this.feedback = null;
 
     try {
+      if (!result.correct) {
+        this.feedback = {
+          type: 'error',
+          message: 'No es correcto. Inténtalo de nuevo.',
+        };
+        return;
+      }
+
+      const xp = result.xpEarned;
+      const isLast = this.currentIndex >= this.exercises.length - 1;
+      this.feedback = {
+        type: 'success',
+        message: '¡Muy bien!',
+        xpEarned: xp,
+      };
+
       if (isLast) {
         const { streak } = await this.dataService.addXP(xp, {
           applyStreak: true,
@@ -154,22 +171,29 @@ export class LessonComponent implements OnInit, OnDestroy {
         this.nextUnitUnlocked = nextUnitUnlocked;
         this.nextUnitTitle = nextUnitTitle;
         this.lessonCompleted = true;
-      } else {
-        await this.dataService.addXP(xp, { applyStreak: false });
-        this.xpEarnedThisLesson += xp;
-        this.correctAnswersCount += 1;
-        this.currentIndex++;
+        return;
       }
+
+      await this.dataService.addXP(xp, { applyStreak: false });
+      this.xpEarnedThisLesson += xp;
+      this.correctAnswersCount += 1;
+      this.currentIndex++;
+      this.feedback = {
+        type: 'success',
+        message: '¡Muy bien!',
+        xpEarned: xp,
+      };
     } catch (error: unknown) {
       console.error(error);
-      if (
-        error instanceof Error &&
-        error.message === 'USER_DOC_MISSING'
-      ) {
-        alert('No hay perfil en Firestore para tu cuenta. Vuelve a iniciar sesión.');
-      } else {
-        alert('Error al guardar progreso.');
-      }
+      this.feedback = {
+        type: 'error',
+        message:
+          error instanceof Error && error.message === 'USER_DOC_MISSING'
+            ? 'No hay perfil en Firestore para tu cuenta. Vuelve a iniciar sesión.'
+            : 'Error al guardar progreso.',
+      };
+    } finally {
+      this.isChecking = false;
     }
   }
 }

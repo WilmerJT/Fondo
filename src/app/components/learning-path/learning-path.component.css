@@ -1,9 +1,35 @@
 .path-container {
+  position: relative;
+  isolation: isolate;
   width: min(100%, 780px);
   margin: 0 auto;
   padding: 20px 14px 110px;
   box-sizing: border-box;
   min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Paisaje de fondo */
+.path-container::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image: url('/images/path-fondo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Velo claro para conservar la legibilidad */
+.path-container::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(245, 248, 247, 0.10);
 }
 
 .path-header {
@@ -17,6 +43,7 @@
   margin: 0;
   font-size: clamp(1.5rem, 4vw, 2.2rem);
   color: #1f2937;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.6);
 }
 
 .btn-back {
@@ -103,7 +130,9 @@
   gap: 12px;
   width: 100%;
   border: 1px solid rgba(148, 163, 184, 0.22);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   color: inherit;
   border-radius: 18px;
   padding: 12px 12px 12px 10px;

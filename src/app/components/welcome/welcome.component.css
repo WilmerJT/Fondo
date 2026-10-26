@@ -1,48 +1,229 @@
 .welcome-page {
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   padding: 24px;
   text-align: center;
-  background: linear-gradient(160deg, #667eea 0%, #764ba2 100%);
   color: #fff;
+  background: #17120f;
+}
+
+/* Imagen de fondo con movimiento lento */
+.welcome-background {
+  position: absolute;
+  inset: -3%;
+  z-index: -3;
+  background-image: url('/images/memoria-viva.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  animation: background-drift 24s ease-in-out infinite alternate;
+}
+
+/* Oscurece los bordes para facilitar la lectura */
+.welcome-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg,
+      rgba(0, 0, 0, 0.25) 0%,
+      rgba(0, 0, 0, 0.12) 35%,
+      rgba(0, 0, 0, 0.48) 100%),
+    radial-gradient(ellipse at center,
+      transparent 10%,
+      rgba(0, 0, 0, 0.42) 100%);
+}
+
+/* Humo sutil que asciende */
+.welcome-smoke {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  left: 30%;
+  top: 0;
+  width: 40%;
+  height: 65%;
+  opacity: 0.22;
+  filter: blur(22px);
+  background: radial-gradient(ellipse at 50% 80%,
+      rgba(205, 215, 225, 0.52) 0%,
+      rgba(150, 165, 180, 0.24) 32%,
+      transparent 72%);
+  transform-origin: center bottom;
+  animation: smoke-rise 9s ease-in-out infinite alternate;
+}
+
+/* Resplandor cálido alrededor de la fogata */
+.welcome-fire-glow {
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  left: 50%;
+  bottom: 13%;
+  width: min(75vw, 650px);
+  height: min(48vh, 400px);
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center,
+      rgba(255, 145, 40, 0.23) 0%,
+      rgba(255, 91, 15, 0.12) 35%,
+      transparent 72%);
+  filter: blur(16px);
+  animation: fire-flicker 2.4s ease-in-out infinite alternate;
+}
+
+/* Contenido por encima de todos los efectos */
+.welcome-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 540px;
+  padding: 32px 24px;
+  border: 1px solid rgba(255, 226, 184, 0.2);
+  border-radius: 24px;
+  background: rgba(25, 18, 15, 0.42);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
 .welcome-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
+  font-size: 48px;
+  margin-bottom: 12px;
 }
 
-.welcome-page h1 {
-  margin: 0 0 12px;
-  font-size: 2rem;
+.welcome-content h1 {
+  margin: 0 0 16px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.2rem, 7vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.8);
 }
 
-.welcome-page p {
-  margin: 0 0 32px;
-  max-width: 320px;
-  opacity: 0.95;
-  line-height: 1.5;
+.welcome-content p {
+  margin: 0 0 30px;
+  max-width: 390px;
+  font-size: clamp(1rem, 2.5vw, 1.15rem);
+  line-height: 1.7;
+  color: #fff4e5;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95);
 }
 
 .welcome-btn {
   display: inline-block;
-  padding: 16px 32px;
-  border-radius: 16px;
+  padding: 15px 28px;
+  border: 1px solid rgba(255, 240, 210, 0.4);
+  border-radius: 12px;
   font-weight: 800;
   text-decoration: none;
-  transition: transform 0.1s ease;
-}
-
-.welcome-btn:active {
-  transform: scale(0.98);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .welcome-btn--primary {
-  background: #58cc02;
   color: #fff;
-  box-shadow: 0 4px 0 #46a302;
+  background: #8b3e1d;
+  box-shadow: 0 4px 0 #572612;
+}
+
+.welcome-btn:hover {
+  transform: translateY(-2px);
+  background: #a74e25;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.welcome-btn:active {
+  transform: translateY(1px);
+}
+
+.welcome-btn:focus-visible {
+  outline: 3px solid #ffdb9b;
+  outline-offset: 4px;
+}
+
+/* Animaciones */
+@keyframes background-drift {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.06) translateY(-0.5%);
+  }
+}
+
+@keyframes smoke-rise {
+  0% {
+    transform: translate(-5%, 8%) scale(0.85, 0.9);
+    opacity: 0.12;
+  }
+
+  50% {
+    opacity: 0.24;
+  }
+
+  100% {
+    transform: translate(7%, -9%) scale(1.15, 1.08);
+    opacity: 0.17;
+  }
+}
+
+@keyframes fire-flicker {
+  from {
+    opacity: 0.55;
+    scale: 0.94;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1.06;
+  }
+}
+
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+
+  .welcome-background,
+  .welcome-smoke,
+  .welcome-fire-glow {
+    animation: none;
+  }
+
+  .welcome-btn {
+    transition: none;
+  }
+}
+
+/* Ajustes para celulares */
+@media (max-width: 480px) {
+  .welcome-page {
+    padding: 16px;
+  }
+
+  .welcome-content {
+    padding: 28px 20px;
+  }
+
+  .welcome-background {
+    background-position: center center;
+  }
+
+  .welcome-fire-glow {
+    bottom: 10%;
+    width: 100vw;
+  }
 }

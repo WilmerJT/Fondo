@@ -1,12 +1,38 @@
 .dashboard {
-  width: min(100%, 760px);
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 940px);
   margin: 0 auto;
-  padding: 20px 16px 104px;
+  padding: 28px 16px 104px;
   box-sizing: border-box;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 22px;
+}
+
+/* Imagen de fondo */
+.dashboard::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background-image: url('/images/dashboard-fondo.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Capa clara para que el contenido sea legible */
+.dashboard::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(245, 248, 247, 0.10);
 }
 
 .header {
@@ -193,3 +219,21 @@
   }
 }
 
+/* Cabecera legible sobre el fondo */
+.user-info h1 {
+  color: #1f2937;
+  text-shadow: 0 1px 3px rgba(255, 255, 255, 0.6);
+}
+
+/* Tarjetas con un acabado ligeramente translúcido */
+.streak-badge {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.progress-card {
+  box-shadow: 0 12px 28px rgba(31, 41, 55, 0.18);
+}
+
+.feature-card {
+  box-shadow: 0 10px 24px rgba(31, 41, 55, 0.16);
+}
